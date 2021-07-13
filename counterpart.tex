@@ -1,0 +1,38 @@
+\section{Counterpart model}
+
+\begin{definition}
+Let $\Sigma$ be a signature, and $\algset{A}$ the set of algebras over the signature $\Sigma$. A \emph{counterpart
+model} $M$ is a triple $(W, \rightsquigarrow, d)$ such that:
+\begin{itemize}
+  \item $W$ is a set of worlds;
+  \item $d : W \to \algset{A}$ is a function assigning to each world $w \in W$ a $\Sigma$-algebra;
+  \item $\rightsquigarrow\;\subseteq W \times (\algset{A} \rightharpoonup \algset{A}) \times W$ is the
+  \emph{accessibility relation} over $W$, enriched with (partial) homomorphisms (\emph{counterpart relations}) between
+  the algebras of the connected worlds, i.e. for every $(w_1, cr, w_2) \in\;\rightsquigarrow$ it must hold that $cr :
+  d(w_1) \rightharpoonup d(w_2)$ is a (partial) homomorphism.
+\end{itemize}
+\end{definition}
+
+As a shorthand notation, counterpart relations between two worlds in the accessibility relation, $(w_1, cr, w_2) \in
+\rightsquigarrow$, will be also denoted as $\worldcr{w_1}{cr}{w_2}$.
+
+\begin{definition}
+  Let $X, \mathcal{X}$ be denumerable sets of respectively first-order and second-order variables, and $M = (W,
+  \rightsquigarrow, d)$ be a counterpart model over a signature $\Sigma$. A \emph{variable assignment} $\sigma =
+  (\sigma^1, \sigma^2)$ for a world $w \in W$ is a pair of (partial) functions such that $\sigma^1 : X \to d(w)$
+  and $\sigma^2 : \mathcal{X} \to 2^{d(w)}$.
+\end{definition}
+
+Given a term $\epsilon \in \terms{\Sigma}{X}$ and an assignment $\sigma = (\sigma^1, \sigma^2)$, we will denote as
+$\sigma(\epsilon)$ or $\sigma^1(\epsilon)$ the lifting of $\sigma^1$ to the set $\terms{\Sigma}{X}$. If any of the
+variables in $\epsilon$ are not in the domain of $\sigma^1$ than $\sigma(\epsilon)$ is also undefined.
+We will write $cr \circ \sigma$ as a shorthand for $(cr \circ \sigma^1, 2^{cr} \circ \sigma^2)$ where $cr$ is a
+(partial) homomorphism between algebras and $2^{cr}$ is the lifting of $cr$ to sets of values.
+Also, when clear from context, we will overload the notation for domain restriction, $\sigma|_A$ depending on the type
+of variables in the set $A$. If $A$ is a set of first-order variables then $\sigma|_A = (\sigma^1|_A, \sigma^2)$,
+conversely if $A$ is a set of second-order variables then $\sigma|_A = (\sigma^1, \sigma^2|_A)$.
+
+The set of of pairs $(\sigma, w)$ for $\sigma$ a variable assignment over the world $w$ in the counterpart model $M$ is
+denoted as $\universe{}{}(M)$. When clear from context, we will omit the counterpart model. The set of pairs where the
+domain of $\sigma^1$ is a subset of the first-order context $\Gamma$ and the domain of $\sigma^2$ is exactly the
+second-order context $\Delta$ will be denoted as $\universe{\Gamma}{\Delta}$.

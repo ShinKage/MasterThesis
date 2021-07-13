@@ -1,0 +1,55 @@
+\documentclass[a4paper,11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{thmtools}
+\usepackage{stmaryrd}
+\usepackage{braket}
+\usepackage{ebproof}
+
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+\usepackage{microtype}
+
+\declaretheorem[name=Theorem,numberwithin=section,%
+                refname={theorem,theorems},%
+                Refname={Theorem,Theorems}]{theorem}
+\declaretheorem[name=Definition,numberwithin=section,%
+                refname={definition,definitions},
+                Refname={Definition,Definitions}]{definition}
+\declaretheorem[name=Corollary,sibling=theorem,%
+                refname={corollary,corollaries},
+                Refname={Corollary,Corollaries}]{corollary}
+\declaretheorem[name=Lemma,sibling=theorem,%
+                refname={lemma,lemmata},
+                Refname={Lemma,Lemmata}]{lemma}
+\declaretheorem[name=Example,numberwithin=section,%
+                refname={example,examples},
+                Refname={Example,Examples}]{example}
+
+\input{macros}
+
+\begin{document}
+
+\chapter{Introduction}
+\input{introduction}
+
+\chapter{Linear Temporal Logic}
+\input{ltl}
+
+\chapter{Counterpart Semantic}
+\input{algebra}
+\input{counterpart}
+\input{syntax}
+\input{semantics}
+
+\chapter{Proof System}
+\input{axioms}
+
+\end{document}

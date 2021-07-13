@@ -1,0 +1,69 @@
+\section{Algebra}
+
+\begin{definition}[Many-sorted Signature]
+  A \emph{many-sorted signature} $\Sigma$ is a pair $(S_\Sigma, F_\Sigma)$ where $S_\Sigma = \set{\tau_1, \ldots,
+  \tau_n}$ is a set of sorts, and $F_\Sigma = \set{f_\Sigma : \tau_1 \times \cdots \times \tau_n \to \tau | \tau_i, \tau
+  \in \Sigma_\tau, i = 1, \ldots, n}$ is a set of function symbols.
+\end{definition}
+
+\begin{definition}[Many-sorted Algebra]
+  A \emph{many-sorted algebra} $\algebra{A}$ with signature $\Sigma$, or $\Sigma$-algebra, is a pair $(A,
+  F_\Sigma^\algebra{A})$ such that:
+  \begin{itemize}
+    \item $A$ is a family of carrier sets indexed by the sorts of $\Sigma$;
+    \item $F_\Sigma^\algebra{A}$ is a family of functions indexed by the function symbols of $\Sigma$,
+      $\set{f_\Sigma^\algebra{A} : A_{\tau_1} \times \cdots \times A_{\tau_n} \to A_\tau | f_\Sigma : \tau_1 \times
+      \cdots \times \tau_n \to \tau \in F_\Sigma}$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Homomorphism]
+  Given two $\Sigma$-algebras $\algebra{A}$ and $\algebra{B}$, a \emph{(partial)
+  homomorphism} is a family of (partial) functions indexed by the sorts of $\Sigma$, $\set{\rho_\tau : A_\tau
+  \rightharpoonup B_\tau | \tau \in S_\Sigma}$, such that for each function symbol $f_\Sigma : \tau_1 \times \cdots \times
+  \tau_n \in F_\Sigma$ and list of elements $a_1 \in A_{\tau_1}, \ldots, a_n \in A_{\tau_n}$, if each function
+  $\rho_{\tau_i}$ is defined for the element $a_i$ then $\rho_\tau$ is defined for the element $f_\Sigma^\algebra{A}(a_1,
+  \ldots, a_n)$ and $\rho_\tau(f_\Sigma^\algebra{A}(a_1, \ldots, a_n)) = f_\Sigma^\algebra{B}(\rho_{\tau_1}(a_1),
+  \ldots, \rho_{\tau_n}(a_n))$.
+\end{definition}
+
+\begin{example}[Graph algebra]
+  Simple directed graphs can be modeled by the signature $\Sigma = (\set{\tau_v, \tau_e}, \set{s : \tau_e \to \tau_v, t
+  : \tau_e \to \tau_v})$, where $\tau_v$ is the sort of vertices, $\tau_e$ is the sort of edges and $s$, $t$ determine
+  respectively the source and target vertex for a given edge. Each $\Sigma$-algebra for this signature is a particular
+  graph, i.e. the graphs in figure 1 are visual representations of the following algebras: $\algebra{G}_0 =
+  (\set{\set{n_0, n_1, n_2},\set{e_0, e_1, e_2}}, \set{s^{\algebra{G}_0}, t^{\algebra{G}_0}})$, where $s^{\algebra{G}_0} =
+  \set{e_0 \mapsto n_0, e_1 \mapsto n_1, e_2 \mapsto n_2}$ and $t^{\algebra{G}_0} = \set{e_0 \mapsto n_1, e_1 \mapsto
+  n_2, e_2 \mapsto n_0}$.
+\end{example}
+
+To model existential properties, we can extend a signature $\Sigma$ with a denumerable set $X$ of variables typed over
+$S_\Sigma$, obtaining the signature $\Sigma_X$. The $\tau$-typed subset of $X$ is denoted with $X_\tau$, and typed
+variables are denoted with $x_\tau$ or $x : \tau$. $\tau$-sorted terms are denoted with $\epsilon_\tau$ or $\epsilon :
+\tau$.
+
+\begin{definition}[Term]
+  Let $\Sigma$ be a signature, let $X$ be a denumerable set of individual variables typed over $S_\Sigma$, and let
+  $\Sigma_X$ be the signature obtained by extending $\Sigma$ with $X$. The (many-sorted) set $\terms{\Sigma}{X}$ of
+  \emph{terms} is the smallest set such that:
+  \[
+    \begin{prooftree}
+      \hypo{\phantom{[1,n]}} % ALIGNMENT ONLY
+      \infer1{X \subseteq \terms{\Sigma}{X}}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{f : \tau_1 \times \cdots \tau_n \to \tau \in F_\Sigma}
+      \hypo{\forall i \in [1,n] \ldotp \epsilon_i : \tau_i \in \terms{\Sigma}{X}}
+      \infer2{f(\epsilon_1, \ldots, \epsilon_n) : \tau \in \terms{\Sigma}{X}}
+    \end{prooftree}
+  \]
+\end{definition}
+
+\begin{example}[Terms]
+  Let be $\Sigma = (\set{\tau}, \set{1 : \tau, \otimes : \tau \to \tau})$ a monoidal signature with a single sort. Let
+  be $X$ a denumerable set of variables with $x, y, z \in X$, then some example of terms in
+  $\terms{\Sigma}{X}$ are $1 \otimes 1 : \tau$, $x \otimes y \otimes 1$ and $(x \otimes 1) \otimes (1
+  \otimes y)$. Examples from the previously defined graph algebra $\Sigma$ are $s(x_{\tau_e})$ and $t(y_{\tau_e})$ which
+  represent respectively the source vertex for an edge $x_{\tau_e}$ and the target vertex for an edge $y_{\tau_e}$.
+\end{example}

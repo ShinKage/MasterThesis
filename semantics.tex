@@ -1,0 +1,113 @@
+\section{Semantics}
+
+\begin{definition}[First-order semantic function]
+Let $\phi$ be a formula-in-context, and $\Gamma$ a first-order context.
+The evaluation of $\phi$ in the counterpart model $M$ with context $\Gamma$ is given by the function
+$\sem{\cdot}{\Gamma} : \mathcal{F}_\Gamma \to \universe{\Gamma}$ defined as:
+\begin{align*}
+  \sem{tt}{\Gamma} &= \universe{\Gamma} \\
+  \sem{x_\tau = \epsilon_\tau}{\Gamma} &= \set{(\sigma, w) \in \universe{\Gamma} |
+      \sigma(\epsilon) \text{ is defined and } \sigma(x) = \sigma(\epsilon)} \\
+  \sem{\neg\phi}{\Gamma} &= \universe{\Gamma} \setminus \sem{\phi}{\Gamma} \\
+  \sem{\phi_1 \lor \phi_2}{\Gamma} &= \sem{\phi_1}{\Gamma} \cup \sem{\phi_2}{\Gamma} \\
+  \sem{\existss{x_\tau}{\phi}}{\Gamma}{} &= \set{(\left.\sigma\right|_\Gamma, w) | (\sigma, w) \in
+      \sem{\phi}{\Gamma, x}} \\
+  \sem{\next{\phi}}{\Gamma}{} &= \set{(\sigma, w) \in \universe{\Gamma} |
+      \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{\phi}{\Gamma}} } \\
+  \sem{\until{\phi_1}{\phi_2}}{\Gamma}{} &= \sem{\phi_2}{\Gamma} \cup \set{(\sigma, w) \in \sem{\phi_1}{\Gamma} |
+      \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{\until{\phi_1}{\phi_2}}{\Gamma}{}}}
+\end{align*}
+\end{definition}
+
+The formula $tt$ holds for any possible pair assignement-world. The predicate $=$ models the standard notion of equality
+for typed terms, thus $x_\tau = \epsilon_\tau$ is valid only if both terms share the same type $\tau$ and the evaluation
+for the term $\epsilon$ is defined and equal to the evaluation for the variable $x$. The negation of a formula is
+satisfied by all the pairs that do not satisfy the formula without the negation. The semantic of a disjunction of
+formulae is the union of the semantics, within the same context.
+Existentially quantied formulae are evaluated in two steps, first we introduce a new variable $x$ in the context
+$\Gamma$ and we evaluate the formula in this new context $\Gamma, x$, then the set of pairs that satisfy the formula is
+the set of pairs in the new context $\Gamma, x$ restricted to the original context $\Gamma$.
+Next we look at temporal operators. For formulae containing the next operator, e.g. $\next{\phi}$, for each world $w$ we
+search all the worlds $w'$ related via the counterpart relation and we check wether an assignment $\sigma$ in $w$
+satisfies the argument of the operator after being updated by the (partial) homomorphism.
+Formulae with the until operator, instead, are satisfied by all the pairs that satisfies the post-condition and by all
+the pairs that satisfy the pre-condition and evolve via the counterpart relation into a pair that also satisfy the
+complete formula with the until operator.
+
+\begin{definition}
+  A formula $\phi \in \mathcal{F}_\Sigma$ is called \emph{valid for the counterpart model $M$}, denoted by $\vDash_M
+  \phi$, if $(\sigma, w) \in \sem{\phi}{\Gamma}$ for every world-assignement pair $(\sigma, w) \in \universe{\Gamma}(M)$
+  and context $\Gamma$ such that the $\phi$ is well-scoped.
+\end{definition}
+\begin{definition}
+  A formula $\phi \in \mathcal{F}_\Sigma$ is called a \emph{consequence} of a set $F \subseteq \mathcal{F}_\Sigma$,
+  denoted $F \vDash \phi$, if $\vDash_M \phi$ holds for every model $M$ with $\vDash_M \psi$ for all $\psi \in F$.
+\begin{definition}
+\end{definition}
+  A formula $\phi \in \mathcal{F}_\Sigma$ is called \emph{valid}, denoted by $\vDash \phi$, if $\emptyset \vDash \phi$
+  holds.
+\end{definition}
+
+\section{Other operators}
+Let's explore the semantics of the other common operators defined in the previous chapters.
+
+\begin{align}
+  \sem{\phi_1 \land \phi_2}{\Gamma}
+    &= \sem{\neg(\neg\phi_1 \lor \neg\phi_2)}{\Gamma} \notag \\
+    &= \universe{\Gamma} \setminus \sem{(\neg\phi_1 \lor \neg\phi_2)}{\Gamma} \notag
+     = \universe{\Gamma} \setminus ((\universe{\Gamma} \setminus \sem{\phi_1}{\Gamma}) \cup (\universe{\Gamma}
+         \setminus \sem{\phi_2}{\Gamma})) \notag \\
+    &= \sem{\phi_1}{\Gamma} \cap \sem{\phi_2}{\Gamma} \label{eq:andsem} \\[1ex]
+  \sem{\phi_1 \to \phi_2}{\Gamma}
+    &= \sem{\neg\phi_1 \lor \phi_2}{\Gamma}
+     = (\universe{\Gamma} \setminus \sem{\phi_1}{\Gamma}) \cup \sem{\phi_2}{\Gamma} \label{eq:impliessem} \\[1ex]
+  \sem{\phi_1 \leftrightarrow \phi_2}{\Gamma}
+    &= \sem{(\phi_1 \to \phi_2) \land (\phi_2 \to \phi_1)}{\Gamma} \notag \\
+    &= ((\universe{\Gamma} \setminus \sem{\phi_1}{\Gamma}) \cup \sem{\phi_2}{\Gamma}) \cap ((\universe{\Gamma}
+         \setminus \sem{\phi_2}{\Gamma}) \cup \sem{\phi_1}{\Gamma}) \notag \\
+    &= ((\universe{\Gamma} \setminus \sem{\phi_1}{\Gamma}) \cap (\universe{\Gamma} \setminus \sem{\phi_2}{\Gamma}))
+         \cup (\sem{\phi_1}{\Gamma} \cap \sem{\phi_2}{\Gamma}) \notag \\
+    &= (\sem{\neg\phi_1 \land \neg\phi_2}{\Gamma}) \cup (\sem{\phi_1 \land \phi_2}{\Gamma}) \label{eq:iffsem} \\[1ex]
+  \sem{\foralls{x}{\phi}}{\Gamma}
+    &= \sem{\neg\existss{x}{\neg\phi}}{\Gamma}
+     = \universe{\Gamma} \setminus \Set{(\restrict{\sigma}{\Gamma}, w) | (\sigma, w) \in \universe{\Gamma,x}
+         \setminus \sem{\phi}{\Gamma,x}} \label{eq:forallsem} \\[1ex]
+  \sem{F\phi}{\Gamma}
+    &= \sem{\until{tt}{\phi}}{\Gamma} \notag \\
+    &= \sem{\phi}{\Gamma} \cup \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ
+         \sigma, w') \in \sem{F\phi}{\Gamma}}} \notag \\
+    &= \sem{\phi}{\Gamma} \cup \sem{XF\phi}{\Gamma}
+     = \sem{\phi \lor XF\phi}{\Gamma} \label{eq:eventuallysem} \\[1ex]
+  \sem{G\phi}{\Gamma}
+    &= \sem{\neg F\neg\phi}{\Gamma}
+     = \sem{\neg(\until{tt}{\neg\phi})}{\Gamma} \notag \\
+    &= \universe{\Gamma} \setminus (\sem{\neg\phi}{\Gamma} \cup \set{(\sigma, w) \in \universe{\Gamma} |
+         \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{F\neg\phi}{\Gamma}}}) \notag \\
+    &= \sem{\phi}{\Gamma} \cap (\universe{\Gamma} \setminus \set{(\sigma, w) \in \universe{\Gamma} |
+         \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{F\neg\phi}{\Gamma}}}) \notag \\
+    &= \sem{\phi}{\Gamma} \cap \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ
+         \sigma, w') \in \sem{G\phi}{\Gamma}}} \notag \\
+    &= \sem{\phi}{\Gamma} \cap \sem{XG\phi}{\Gamma}
+     = \sem{\phi \land XG\phi}{\Gamma} \label{eq:foreversem}
+\end{align}
+
+% \begin{definition}[Second-order semantic function]
+% Let $\phi$ be a formula-in-context, and $\Gamma$ and $\Omega$ respectively a first-order and second-order context.
+% The evaluation of $\phi$ in the counterpart model $M$ with context $\Gamma$ and $\Delta$ is given by the function
+% $\sem{\cdot}{\Gamma}{\Delta} : \mathcal{F}_\Gamma^\Delta \to \universe{\Gamma}{\Delta}$ defined as:
+% \begin{align*}
+%   \sem2{tt}{\Gamma}{\Delta} &= \universe{\Gamma}{\Delta} \\
+%   \sem2{\epsilon \in \chi}{\Gamma}{\Delta} &= \set{(\sigma, w) \in \universe{\Gamma}{\Delta} |
+%       \sigma(\epsilon) \text{ is defined and } \sigma(\epsilon) \in \sigma(\chi)} \\
+%   \sem2{\neg\phi}{\Gamma}{\Delta} &= \universe{\Gamma}{\Delta} \setminus \sem2{\phi}{\Gamma}{\Delta} \\
+%   \sem2{\phi_1 \lor \phi_2}{\Gamma}{\Delta} &= \sem2{\phi_1}{\Gamma}{\Delta} \cup \sem2{\phi_2}{\Gamma}{\Delta} \\
+%   \sem2{\existss{x_\tau}{\phi}}{\Gamma}{\Delta} &= \set{(\left.\sigma\right|_\Gamma, w) | (\sigma, w) \in
+%       \sem2{\phi}{\Gamma, x}{\Delta}} \\
+%   \sem2{\existss{\chi_\tau}{\phi}}{\Gamma}{\Delta} &= \set{(\left.\sigma\right|_\Delta, w) | (\sigma, w) \in
+%       \sem2{\phi}{\Gamma}{\Delta, \chi}} \\
+%   \sem2{\next{\phi}}{\Gamma}{\Delta} &= \set{(\sigma, w) \in \universe{\Gamma}{\Delta} |
+%       \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem2{\phi}{\Gamma}{\Delta}} } \\
+%   \sem2{\until{\phi_1}{\phi_2}}{\Gamma}{\Delta} &= \sem2{\phi_2}{\Gamma}{\Delta} \cup (\sem2{\phi_1}{\Gamma}{\Delta} \cap
+%       \sem2{\next{(\until{\phi_1}{\phi_2})}}{\Gamma}{\Delta}) \\
+% \end{align*}
+% \end{definition}
