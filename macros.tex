@@ -5,14 +5,34 @@
 \newcommand{\algset}[1]{\mathcal{#1}}
 \newcommand{\terms}[2]{T({#1}_{#2})}
 \newcommand{\worldcr}[3]{#1 \overset{#2}{\rightsquigarrow} #3}
-\newcommand{\next}[1]{X{#1}}
+\newcommand{\nextop}[1]{X{#1}}
 \newcommand{\until}[2]{{#1}\,U {#2}}
 \newcommand{\forever}[1]{G{#1}}
 \newcommand{\eventually}[1]{F{#1}}
 \newcommand{\weak}[2]{{#1}\,W {#2}}
 \newcommand{\existss}[2]{\exists {#1} \ldotp {#2}}
 \newcommand{\foralls}[2]{\forall {#1} \ldotp {#2}}
-\newcommand{\sem}[2]{\llbracket #1 \rrbracket_{#2}}
-\newcommand{\semtwo}[3]{\llbracket #1 \rrbracket_{#2}^{#3}}
+\newcommand{\sem}[4]{({#1}, {#2}) \vDash_{#3} {#4}}
+\newcommand{\semn}[4]{({#1}, {#2}) \nvDash_{#3} {#4}}
+\newcommand{\semtwo}[6]{({#1}, {#2}, {#3}) \vDash_{#4}^{#5} {#6}}
+\newcommand{\semntwo}[6]{({#1}, {#2}, {#3}) \nvDash_{#4}^{#5} {#6}}
 \newcommand{\universe}[1]{\Omega_{#1}}
 \newcommand{\universetwo}[2]{\Omega_{#1}^{#2}}
+\newcommand{\ext}[3]{\text{ext}_{#1}({#2},{#3})}
+
+% FIGURE STUFF
+\makeatletter
+\def\head#1{\expandafter\@head#1,\@eol}
+\def\@head#1,#2\@eol{#1}
+\def\last#1{\expandafter\@last#1,\@eol}
+\def\@last#1,#2\@eol{\ifx\@eol#2\@eol#1\else\@last#2\@eol\fi}
+\makeatother
+\newcommand{\MemoryLayout}[1]{
+  \coordinate (start) at (0, 0);
+  \foreach \lab/\dr [remember=\lab as \p (initially start)] in {#1} {
+    \node[draw, rectangle, minimum height=1.25cm, minimum width=1cm, right of=\p] (\lab) [] {$\lab$};
+  }
+  \node[draw, rectangle, minimum height=1.25cm, minimum width=1cm, right of=\last{#1}] (ell) [] {$\dots$};
+  \node[draw, rectangle, color=white, very thick, minimum height=1.25cm, minimum width=1pt, right=-1pt of ell] () [] {};
+  \draw[](\head{#1}.north west)++(0.7pt,0)--++(0,24pt)node[above]{$0$};
+}

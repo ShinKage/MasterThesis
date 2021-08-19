@@ -1,43 +1,27 @@
 \section{Axioms}
-\begin{definition}[Axiomatic system]
+\begin{definition}[Axiomatic system]\label{def:axioms}
   The axiomatic system for FO-LTL contains the following axioms:
   \begin{enumerate}
     \item $\phi_1 \to (\phi_2 \to \phi_1)$;
     \item $(\phi_1 \to (\phi_2 \to \phi_3)) \to ((\phi_1 \to \phi_2) \to (\phi_1 \to \phi_3))$;
     \item $(\neg\phi_1 \to \neg\phi_2) \to (\phi_2 \to \phi_1)$;
-    \item $\neg\next{\phi} \leftrightarrow \next{\neg\phi}$;
-    \item $\next{(\phi_1 \to \phi_2)} \to (\next{\phi_1} \to \next{\phi_2})$;
-    \item $\phi \to \next{\phi}$ if $\phi$ is rigid;
-    \item $\until{\phi_1}{\phi_2} \leftrightarrow \phi_2 \lor (\phi_1 \land \next{(\until{\phi_1}{\phi_2})})$;
+    \item $\neg\nextop{\phi} \to \nextop{\neg\phi}$;
+    \item $\nextop{(\phi_1 \to \phi_2)} \to (\nextop{\phi_1} \to \nextop{\phi_2})$;
+    \item $\phi \to \nextop{\phi}$ if $\phi$ is rigid;
+    \item $\until{\phi_1}{\phi_2} \leftrightarrow \phi_2 \lor (\phi_1 \land \nextop{(\until{\phi_1}{\phi_2})})$;
     \item $\until{\phi_1}{\phi_2} \to \eventually{\phi_2}$;
-    \item $\phi[t/x] \to \existss{x}{\phi}$, with $x$ free in $\phi$;
+    \item $\phi[v/x] \to \existss{x}{\phi}$, with $x$ free in $\phi$ and $v$ a value in the domain;
     \item $x = x$;
     \item $x = y \to (\phi \to \phi[y/x])$.
   \end{enumerate}
   And the following induction rules:
   \begin{enumerate}
     \item[mp] $\phi_1, \phi_1 \to \phi_2 \vdash \phi_2$;
-    \item[nex] $\phi \vdash \next{\phi}$;
-    \item[ind] $\phi_1 \to \phi_3 \lor (\phi_2 \land \next{\phi_1}) \vdash \phi_1 \to \until{\phi_2}{\phi_3}$;
-    \item[par] $\phi_1 \to \phi_2 \vdash \existss{x}{\phi_1} \to \phi_2$ with $x$ not free in $\phi_2$.
+    \item[nex] $\phi \vdash \nextop{\phi}$;
+    \item[ind] $\phi_1 \to \phi_3 \lor (\phi_2 \land \nextop{\phi_1}) \vdash \phi_1 \to \until{\phi_2}{\phi_3}$;
+    \item[par] $\phi_1 \to \phi_2 \vdash (\existss{x}{\phi_1}) \to \phi_2$ with $x$ not free in $\phi_2$.
   \end{enumerate}
 \end{definition}
-
-\begin{theorem}\label{thm:implsem}
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \phi_1 \to \phi_2$ if and only if $\sem{\phi_1}{} \subseteq
-  \sem{\phi_2}{}$.
-\end{theorem}
-\begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi_1$ and $\phi_2$ are
-  well-scoped. By~\Cref{eq:impliessem}, $\sem{\phi_1 \to \phi_2}{\Gamma} = (\universe{} \setminus \sem{\phi_1}{\Gamma})
-  \cup \sem{\phi_2}{\Gamma}$. Let $(\sigma, w) \in \sem{\phi_1 \to \phi_2}{\Gamma}$. If $(\sigma, w) \in
-  \sem{\phi_1}{\Gamma}$ then it must follow that $(\sigma, w) \in \sem{\phi_2}{\Gamma}$.
-\end{proof}
-\begin{corollary}\label{cor:iffsem}
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \phi_1 \leftrightarrow \phi_2$ holds if and only if
-  $\sem{\phi_1}{} =
-  \sem{\phi_2}{}$.
-\end{corollary}
 
 \begin{lemma}\label{lem:propaxioms}
   Let $\phi_1, \phi_2, \phi_3 \in \mathcal{F}_\Sigma$.
@@ -48,139 +32,131 @@
   \end{enumerate}
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi_1$ and $\phi_2$ are well-scoped.
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$:
   \begin{enumerate}
-    \item From trivial applications of the semantic rules it follows that $\sem{\phi_1 \to (\phi_2 \to \phi_1)}{\Gamma}
-      = \sem{\neg\phi_1}{\Gamma} \cup \sem{\neg\phi_2}{\Gamma} \cup \sem{\phi_1}{\Gamma} = \universe{\Gamma}$.
+    \item From trivial applications of the semantic rules it follows that $\sem{\sigma}{w}{\Gamma}{\phi_1 \to (\phi_2
+      \to \phi_1)} \Leftrightarrow \semn{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \semn{\sigma}{w}{\Gamma}{\phi_2}
+      \text{ or } \sem{\sigma}{w}{\Gamma}{\phi_1}$ which is a tautology by the law of excluded middle.
 
-    \item By~\Cref{cor:iffsem} we show that $\vDash (\phi_1 \to (\phi_2 \to \phi_3)) \to ((\phi_1 \to \phi_2)
+    \item By~\Cref{eq:iffsem} we show that the stronger formula $\vDash (\phi_1 \to (\phi_2 \to \phi_3)) \leftrightarrow ((\phi_1 \to \phi_2)
       \leftrightarrow (\phi_1 \to \phi_3))$. From the semantic rules:
       \[
         \begin{split}
-          \sem{\phi_1 \to (\phi_2 \to \phi_3)}{\Gamma} &= \sem{\neg\phi_1}{\Gamma} \cup \sem{\neg\phi_2}{\Gamma} \cup
-            \sem{\phi_3}{\Gamma} \\[1ex]
-          \sem{(\phi_1 \to \phi_2) \to (\phi_1 \to \phi_3)}{\Gamma} &= (\sem{\phi_1}{\Gamma} \cap
-            \sem{\neg\phi_2}{\Gamma}) \cup \sem{\neg\phi_1}{\Gamma} \cup \sem{\phi_3}{\Gamma} \\
-          &= \sem{\neg\phi_1}{\Gamma} \cup \sem{\neg\phi_2}{\Gamma} \cup \sem{\phi_3}{\Gamma}
+          &\sem{\sigma}{w}{\Gamma}{\phi_1 \to (\phi_2 \to \phi_3)} \\
+            &\quad\Leftrightarrow \semn{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \semn{\sigma}{w}{\Gamma}{\phi_2} \text{ or }
+              \sem{\sigma}{w}{\Gamma}{\phi_3} \\
+            &\quad\Leftrightarrow (\sem{\sigma}{w}{\Gamma}{\phi_1} \text{ and } \semn{\sigma}{w}{\Gamma}{\phi_2}) \text{ or }
+              \semn{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \sem{\sigma}{w}{\Gamma}{\phi_3} \\
+            &\quad\Leftrightarrow \sem{\sigma}{w}{\Gamma}{(\phi_1 \to \phi_2) \to (\phi_1 \to \phi_3)}
         \end{split}
       \]
 
-    \item By~\Cref{cor:iffsem} we show that $\vDash (\neg\phi_1 \to \neg\phi_2) \leftrightarrow (\phi_2 \to \phi_1)$.
+    \item By~\Cref{eq:iffsem} we show the stronger formula $\vDash (\neg\phi_1 \to \neg\phi_2) \leftrightarrow (\phi_2 \to \phi_1)$.
       From the semantic rules:
       \[
-        \sem{\neg\phi_1 \to \neg\phi_2}{\Gamma} = \sem{\phi_1}{\Gamma} \cup \sem{\neg\phi_2}{\Gamma} =
-        \sem{\neg\phi_2}{\Gamma} \cup \sem{\phi_1}{\Gamma} = \sem{\phi_2 \to \phi_1}{\Gamma}
+        \begin{split}
+          \sem{\sigma}{w}{\Gamma}{\neg\phi_1 \to \neg\phi_2}
+            &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \semn{\sigma}{w}{\Gamma}{\phi_2} \\
+            &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_2 \to \phi_1}
+        \end{split}
       \]
   \end{enumerate}
 \end{proof}
 
 \begin{lemma}\label{lem:negnextdist}
-  Let $\phi \in \mathcal{F}_\Sigma$, $\vDash \neg\next{\phi} \leftrightarrow \next{\neg\phi}$.
+  Let $\phi \in \mathcal{F}_\Sigma$, $\vDash \neg\nextop{\phi} \to \nextop{\neg\phi}$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi$ is well-scoped.
-  By the definitions of the operators next and implication:
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$.
   \[
-    \sem{\neg\next{\phi}}{\Gamma} = \universe{\Gamma} \setminus \set{(\sigma, w) \in \universe{\Gamma} |
-    \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w) \in \sem{\phi}{\Gamma}}}.
-  \]
-  By assumptions, for every world $w$ there is always at least one world $w'$ which is accessible from $w$,
-  i.e. $\worldcr{w}{cr}{w'}$, thus:
-  \[
-    \sem{\neg\next{\phi}}{\Gamma} = \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ
-    \sigma, w) \in \universe{\Gamma} \setminus \sem{\phi}{\Gamma}}} = \sem{\next{\neg\phi}}{\Gamma}.
+    \begin{split}
+      \sem{\sigma}{w}{\Gamma}{\neg\nextop{\phi}}
+        &\Leftrightarrow \neg\foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}} \\
+        &\Rightarrow \neg\existss{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}} \\
+        &\Leftrightarrow \foralls{\worldcr{w}{cr}{w'}}{\semn{cr \circ \sigma}{w'}{\Gamma}{\phi}} \\
+        &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\nextop{\neg\phi}}
+    \end{split}
   \]
 \end{proof}
 
 \begin{lemma}\label{lem:impnextdist}
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \next{(\phi_1 \to \phi_2)} \to (\next{\phi_1} \to
-  \next{\phi_2})$.
+  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \nextop{(\phi_1 \to \phi_2)} \to (\nextop{\phi_1} \to
+  \nextop{\phi_2})$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi_1$ and $\phi_2$ are well-scoped.
-  By definition of the operators next and implication:
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$:
   \[
     \begin{split}
-      \sem{\next{(\phi_1 \to \phi_2)}}{\Gamma} &=
-        \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w) \in
-        \sem{\neg\phi_1}{\Gamma} \cup \sem{\phi_2}{\Gamma}}} \\
-        &= \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w) \in
-        \sem{\neg\phi_1}{\Gamma}}} \\
-        &\phantom{= }\qquad \cup \set{(\sigma, w) \in \universe{\Gamma} | \foralls{\worldcr{w}{cr}{w'}}{(cr \circ
-        \sigma, w) \in \sem{\phi_2}{\Gamma}}} \\
-        &= \sem{\next{\neg\phi_1}}{\Gamma} \cup \sem{\next{\phi_2}}{\Gamma} \\
-        &= \sem{\neg\next{\phi_1}}{\Gamma} \cup \sem{\next{\phi_2}}{\Gamma} \\
-        &= \sem{\next{\phi_1} \to \next{\phi_2}}{\Gamma} \\
+      &\sem{\sigma}{w}{\Gamma}{\nextop{(\phi_1 \to \phi_2)}} \\
+        &\quad\Leftrightarrow \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi_1} \text{ implies }
+            \sem{cr \circ \sigma}{w'}{\Gamma}{\phi_2}} \\
+        &\quad\Rightarrow \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi_1}} \text{ implies }
+            \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi_2}} \\
+        &\quad\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\nextop{\phi_1} \to \nextop{\phi_2}}
     \end{split}
   \]
 \end{proof}
 
 \begin{lemma}\label{lem:nextintro}
-  Let $\phi \in \mathcal{F}_\Sigma$ be a rigid formula, $\vDash \phi \to \next{\phi}$.
+  Let $\phi \in \mathcal{F}_\Sigma$ be a rigid formula, $\vDash \phi \to \nextop{\phi}$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi$ is well-scoped.
-  Let $(\sigma, w) \in \sem{\phi}{\Gamma}$ and $w'$ such that $\worldcr{w}{cr}{w'}$. By definition, $(\sigma, w) \in
-  \sem{\next{\phi}}{\Gamma}$ iff $(cr \circ \sigma, w') \in \sem{\phi}{\Gamma}$. Since $\phi$ is a rigid formula, $cr
-  \circ \sigma = \sigma$, therefore $(\sigma, w') \in \sem{\phi}{\Gamma}$.
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$.
+  Let $\sem{\sigma}{w}{\Gamma}{\phi}$. By definition, $\sem{\sigma}{w}{\Gamma}{\nextop{\phi}}$ iff
+  $\foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}}$. Let $w'$ be counterpart related to $w$.
+  Since $\phi$ is a rigid formula, $\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}$ must hold.
 \end{proof}
 
 \begin{lemma}\label{lem:untilexp}
   Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \until{\phi_1}{\phi_2} \leftrightarrow \phi_2 \lor (\phi_1 \land
-  \next{(\until{\phi_1}{\phi_2})})$.
+  \nextop{(\until{\phi_1}{\phi_2})})$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi_1$ and $\phi_2$ is well-scoped.
-  \[
-    \begin{split}
-      \sem{\until{\phi_1}{\phi_2}}{\Gamma} &= \sem{\phi_2}{\Gamma} \cup \set{(\sigma, w) \in \sem{\phi_1}{\Gamma} |
-      \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{\until{\phi_1}{\phi_2}}{\Gamma}}} \\
-      &= \sem{\phi_2}{\Gamma} \cup (\sem{\phi_1}{\Gamma} \cap \set{(\sigma, w) \in \universe{\Gamma} |
-      \foralls{\worldcr{w}{cr}{w'}}{(cr \circ \sigma, w') \in \sem{\until{\phi_1}{\phi_2}}{\Gamma}}}) \\
-      &= \sem{\phi_2}{\Gamma} \cup (\sem{\phi_1}{\Gamma} \cap \sem{X(\until{\phi_1}{\phi_2})}{\Gamma}) \\
-      &= \sem{\phi_2 \land (\phi_1 \lor \next{(\until{\phi_1}{\phi_2})})}{\Gamma}
-    \end{split}
-  \]
+  Follows trivially by the definition of the operators until and next.
 \end{proof}
 
 \begin{lemma}\label{lem:untileventually}
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \until{\phi_1}{\phi_2} \to \eventually{\phi_1}$.
+  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$, $\vDash \until{\phi_1}{\phi_2} \to \eventually{\phi_2}$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi_1$ and $\phi_2$ is well-scoped.
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$.
   By the definitions of the operators:
   \[
     \begin{split}
-      \sem{\until{\phi_1}{\phi_2}}{\Gamma} &= \sem{\phi_2}{\Gamma} \cup (\sem{\phi_1}{\Gamma} \cap
-      \sem{\next{(\until{\phi_1}{\phi_2})}}{\Gamma}) \\
-      \sem{\eventually{\phi_2}}{\Gamma} &= \sem{\phi_2}{\Gamma} \cup \sem{\next{\eventually{\phi_2}}}{\Gamma} \\
+      \sem{\sigma}{w}{\Gamma}{\until{\phi_1}{\phi_2}}
+      &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_2} \text{ or } (\sem{\sigma}{w}{\Gamma}{\phi_1} \text{ and }
+          \sem{\sigma}{w}{\Gamma}{\nextop{(\until{\phi_1}{\phi_2})}}) \\
+      &\Rightarrow \sem{\sigma}{w}{\Gamma}{\phi_2} \text{ or } \sem{\sigma}{w}{\Gamma}{\nextop{(\until{\phi_1}{\phi_2})}} \\
+      &\Rightarrow \sem{\sigma}{w}{\Gamma}{\phi_2} \text{ or } \sem{\sigma}{w}{\Gamma}{\nextop{(\until{tt}{\phi_2})}} \\
+      &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\eventually{\phi_2}}
     \end{split}
   \]
-  However it's trivialy to see that $\sem{\phi_1}{\Gamma} \cap \sem{\next{(\until{\phi_1}{\phi_2})}}{\Gamma}$ is a
-  subset of $\sem{\next{\eventually{\phi_2}}}{\Gamma}$, hence the conclusion follows from~\Cref{thm:implsem}. \\
 \end{proof}
 
 \begin{lemma}\label{lem:exintro}
-  Let $\phi \in \mathcal{F}_\Sigma$ with $x \in X$ free in $\phi$, $\vDash \phi[t/x] \to \existss{x}{\phi}$.
+  Let $\phi \in \mathcal{F}_\Sigma$ with $x \in X$ free in $\phi$, $\vDash \phi[v/x] \to \existss{x}{\phi}$, if $v$ is a
+  value in the domain.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi[t/x]$ is well-scoped.
-  Let $(\sigma, w) \in \sem{\phi[t/x]}{\Gamma}$, then $(\sigma[t/x], w) \in \sem{\phi}{\Gamma,x}$.
-  However $\sigma[t/x]|_\Gamma = \sigma$ thus $(\sigma, w) \in \sem{\existss{x}{\phi}}{\Gamma}$.
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$.
+  By hypothesis $\sem{\sigma}{w}{\Gamma}{\phi[v/x]}$, with $v \in d(w)$, then it holds that
+  $\sem{\ext{x}{\sigma}{v}}{w}{\Gamma,x}{\phi}$, therefore $\sem{\sigma}{w}{\Gamma}{\existss{x}{\phi}}$ holds.
 \end{proof}
 
 \begin{lemma}\label{lem:equality}
   Let $\phi \in \mathcal{F}_\Sigma$ and $x, y \in X$,
   \begin{enumerate}
-    \item $x = x$ if $x$ is defined;
-    \item $x = y \to (\phi \to \phi[y/x])$ if $x$ and $y$ are defined.
+    \item $\vDash x = x$;
+    \item $\vDash x = y \to (\phi \to \phi[y/x])$.
   \end{enumerate}
 \end{lemma}
 \begin{proof}
-  Let $M$ be a counterpart model and $\Gamma$ a context such that $\phi$ is well-scoped.
+  Let $M$ be a counterpart model and a context $\Gamma$, a world $w \in W$ and an assignment $\sigma$.
   \begin{enumerate}
-    \item foo
-    \item bar
+    \item By definition, $\sem{\sigma}{w}{\Gamma}{x = x}$ holds if $\sigma(x) = \sigma(x)$, which is trivially true.
+    \item By assumption it holds that $\sem{\sigma}{w}{\Gamma}{x = y}$, thus $\sigma(x) = \sigma(y)$. Assume
+      $\sem{\sigma}{w}{\Gamma}{\phi}$ holds, then by the congruence property of equality it must also hold
+      $\sem{\sigma}{w}{\Gamma}{\phi[y/x]}$.
   \end{enumerate}
 \end{proof}
 
@@ -188,50 +164,45 @@
   If $F \vDash \phi_1$ and $F \vDash \phi_1 \to \phi_2$, then $F \vDash \phi_2$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$ a context such that $\phi_1$ and
-  $\phi_2$ are well-scoped. By definition $\sem{\phi_1 \to \phi_2}{\Gamma} = \sem{\neg\phi_1}{\Gamma} \cup
-  \sem{\phi_2}{\Gamma} = \universe{\Gamma}$, and by hypothesis $\sem{\neg\phi_1}{\Gamma} = \emptyset$, hence it must
-  follow that $\sem{\phi_2}{\Gamma} = \universe{\Gamma}$.
+  Let $M$ be a counterpart model that satisfies $\vDash_M \psi$ for every $\psi \in F$.
+  By definition $\sem{\sigma}{w}{\Gamma}{\phi_1 \to \phi_2} \Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_1}
+  \text{ implies } \sem{\sigma}{w}{\Gamma}{\phi_2}$. By assumption it holds $\sem{\sigma}{w}{\Gamma}{\phi_1}$, thus it must
+  hold that $\sem{\sigma}{w}{\Gamma}{\phi_2}$.
 \end{proof}
 \begin{lemma}\label{lem:nex}
-  If $F \vDash \phi$, then $F \vDash \next{\phi}$ and $F \vDash \forever{\phi}$.
+  If $F \vDash \phi$, then $F \vDash \nextop{\phi}$ and $F \vDash \forever{\phi}$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$ a context such that $\phi$ is
-  well-scoped. Then $\sem{\phi}{\Gamma} = \universe{\Gamma}$. In particular, let $(\sigma, w) \in \universe{\Gamma}$,
-  for every $w'$ such that $\worldcr{w}{cr}{w'}$ it's true that $(cr \circ \sigma, w') \in \universe{\Gamma}$ hence $F
-  \vDash \next{\phi}$. $F \vDash \forever{\phi}$ follows trivially by \Cref{eq:foreversem}.
+  Let $M$ be a counterpart model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$.
+  By assumption $\sem{\sigma}{w}{\Gamma}{\phi}$ holds for every pair $(\sigma, w)$. In particular given a pair $(\sigma,
+  w)$, it must also hold $\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}$ for every $\worldcr{w}{cr}{w'}$.
 \end{proof}
 \begin{lemma}\label{lem:ind}
-  If $F \vDash \phi_1 \to \phi_2$ and $F \vDash \phi_1 \to \next{\phi_1}$, then $F \vDash \phi_1 \to \forever{\phi_2}$.
+  If $F \vDash \phi_1 \to \phi_2$ and $F \vDash \phi_1 \to \nextop{\phi_1}$, then $F \vDash \phi_1 \to \forever{\phi_2}$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$ a context such that $\phi_1$ and
-  $\phi_2$ are well-scoped. $F \vDash \phi_1 \to \forever{\phi_2}$ holds trivially if $\sem{\phi_1}{\Gamma} =
-  \emptyset$, so assume that $\sem{\phi_1}{\Gamma} = \universe{\Gamma}$.
-  Let $(\sigma, w) \in \universe{\Gamma}$, by the assumption $F \vDash \phi_1 \to \next{\phi_1}$ it follows that
-  $(\sigma, w) \in \sem{\next{\phi_1}}{\Gamma}$, and for every $w'$ such that $\worldcr{w}{cr}{w'}$ it's true that $(cr
-  \circ \sigma, w') \in \universe{\Gamma}$ hence for the same reasoning $(cr \circ \sigma, w') \in \sem{\phi_1}{\Gamma}$
-  and $(cr \circ \sigma, w') \in \sem{\next{\phi_1}}{\Gamma}$, thus inductively for any infinite sequence of accessible
-  worlds starting with $w$ it always holds both $(\sigma_n, w_n) \in \sem{\phi_1}{\Gamma}$ and $(\sigma_n, w_n) \in
-  \sem{\next{\phi_1}}{\Gamma}$, where $w_n$ is the n-th world in the sequence and $\sigma_n$ is constructed by composing
-  the counterpart relations with the starting assignement $\sigma$.
-  The assumption $F \vDash \phi_1 \to \phi_2$ implies that for any infinite sequence of accessible worlds starting with
-  $w$ it always holds $(\sigma_n, w_n) \in \sem{\phi_2}{\Gamma}$, thus by definition of the $G$ temporal operator
-  $(\sigma, w) \in \sem{\phi_1 \to \forever{\phi_2}}{\Gamma}$.
+  Let $M$ be a counterpart model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$.  If
+  $\semn{\sigma}{w}{\Gamma}{\phi_1}$ than the conclusion trivially holds. Assume, instead,
+  $\sem{\sigma}{w}{\Gamma}{\phi_1}$. By expanding the formula we need to show that $\sem{\sigma'}{w'}{\Gamma}{\phi_2}$
+  holds for any pair $(\sigma', w')$ such that is the composition of an arbitrary amount of counterpart relations, if $w
+  \overset{cr_0}{\rightsquigarrow} \cdots \overset{cr_n}{\rightsquigarrow} w'$ then $\sigma' = cr_n \circ \cdots \circ
+  cr_0 \circ \sigma$. However, by hypothesis $\sem{\sigma}{w}{\Gamma}{\phi_2}$ and
+  $\sem{\sigma}{w}{\Gamma}{\nextop{\phi_1}}$ are valid in every $(\sigma, w)$ such that
+  $\sem{\sigma}{w}{\Gamma}{\phi_1}$ is valid, therefore $\phi_1$ is valid in every sequence described before and thus
+  $\phi_2$ is valid in every sequence.
 \end{proof}
 \begin{lemma}\label{lem:par}
-  If $F \vDash \phi_1 \to \phi_2$ and $x$ not free in $\phi_2$, then $F \vDash \existss{x}{\phi_1} \to \phi_2$.
+  If $F \vDash \phi_1 \to \phi_2$ and $x$ not free in $\phi_2$, then $F \vDash (\existss{x}{\phi_1}) \to \phi_2$.
 \end{lemma}
 \begin{proof}
-  Let $M$ be a model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$ a context such that $\phi_1$ and
-  $\phi_2$ are well-scoped, then $\vDash_M \phi_1 \to \phi_2$.
-  Assume $(\sigma, w) \not\in \sem{\existss{x}{\phi_1} \to \phi_2}{\Gamma}$ for some $(\sigma, w) \in
-  \universe{\Gamma}$, hence $(\sigma, w) \in \sem{\existss{x}{\phi_1}}{\Gamma}$ and $(\sigma, w) \not\in
-  \sem{\phi_2}{\Gamma}$. Then there is a $\sigma'$ for the context $\Gamma, x$ such that $\sigma'|_\Gamma = \sigma$ and
-  $(\sigma', w) \in \sem{\phi_1}{\Gamma, x}$. Since $\phi_2$ does not contain $x$ as a free variable, $(\sigma', w)
-  \not\in \sem{\phi_2}{\Gamma, x}$, therefore $(\sigma', w) \not\in \sem{\phi_1 \to \phi_2}{\Gamma, x}$ which is a
-  contradiction to $\vDash_M \phi_1 \to \phi_2$.
+  Let $M$ be a counterpart model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$.
+  Assume $\semn{\sigma}{w}{\Gamma}{(\existss{x}{\phi_1}) \to \phi_2}$ for some pair $(\sigma, w)$. Then
+  $\sem{\sigma}{w}{\Gamma}{\existss{x}{\phi_1}}$ and $\semn{\sigma}{w}{\Gamma}{\phi_2}$.
+  Then there is a $v \in d(w)$ such that $\sem{\ext{x}{\sigma}{v}}{w}{\Gamma, x}{\phi_1}$, by definition of existential
+  quantifier. Since $\phi_2$ does not contain $x$ as a free variable, adding an evaluation for $x$ does not change the
+  evaluation of $\phi_2$, i.e. $\semn{\ext{x}{\sigma}{v}}{w}{\Gamma, x}{\phi_2}$, therefore
+  $\semn{\ext{x}{\sigma}{v}}{w}{\Gamma, x}{\phi_1 \to \phi_2}$, which is a contradiction to the hypothesis $\vDash_M
+  \phi_1 \to \phi_2$.
 \end{proof}
 
 \begin{theorem}[Soundness]
@@ -240,16 +211,19 @@
 \begin{proof}
   By induction on the derivation of $\phi$ from $F$:
   \begin{enumerate}
-    \item if $\phi$ is an axiom: lorem ipsum dolor sit amet;
+    \item if $\phi$ is an axiom: $F \vDash \phi$ is proven by~\Cref{lem:propaxioms} for axioms 1,2,3;
+      by~\Cref{lem:negnextdist} for axiom 4; by~\Cref{lem:impnextdist} for axiom 5; by~\Cref{lem:nextintro} for axiom 6;
+      by~\Cref{lem:untilexp} for axiom 7; by~\Cref{lem:untileventually} for axiom 8; by~\Cref{lem:exintro} for axiom 9;
+      by~\Cref{lem:equality} for axioms 10, 11;
     \item if $\phi \in F$ then $F \vDash \phi$ holds trivially;
     \item if $\phi$ is the conclusion of a (mp) rule with premises $F \vdash \psi$ and $F \vdash \psi \to \phi$: by
       induction hypothesis we have $F \vDash \psi$ and $F \vDash \psi \to \phi$, hence $F \vDash \phi$ follows by
       \Cref{lem:mp};
-    \item if $\phi$ is the conclusion of a (nex) rule with premises $F \vdash \psi$, thus $\phi \equiv \next{\psi}$: by
-      induction hypothesis we have $F \vDash \psi$, hence $F \vDash \next{\psi}$ follows by \Cref{lem:nex};
+    \item if $\phi$ is the conclusion of a (nex) rule with premises $F \vdash \psi$, thus $\phi \equiv \nextop{\psi}$: by
+      induction hypothesis we have $F \vDash \psi$, hence $F \vDash \nextop{\psi}$ follows by \Cref{lem:nex};
     \item if $\phi$ is the conclusion of a (ind) rule with premises $F \vdash \psi_1 \to \psi_2$ and $F \vdash \psi_1
-      \to \next{\psi_1}$, thus $\phi \equiv \psi_1 \to \forever{\psi_2}$: by induction hypothesis we have $F \vDash
-      \psi_1 \to \psi_2$ and $F \vDash \psi_1 \to \next{\psi_2}$, hence $F \vDash \psi_1 \to \forever{\psi_2}$ follows
+      \to \nextop{\psi_1}$, thus $\phi \equiv \psi_1 \to \forever{\psi_2}$: by induction hypothesis we have $F \vDash
+      \psi_1 \to \psi_2$ and $F \vDash \psi_1 \to \nextop{\psi_2}$, hence $F \vDash \psi_1 \to \forever{\psi_2}$ follows
       by \Cref{lem:ind};
     \item if $\phi$ is the conclusion of a (par) rule with premises $F \vdash \psi_1 \to \psi_2$, thus $\phi \equiv
       \existss{x}{\psi_1} \to \psi_2$ with $x$ not free in $\psi_2$: by induction hypothesis we have $F \vDash \psi_1
@@ -257,6 +231,86 @@
   \end{enumerate}
 \end{proof}
 
+\begin{example}\label{ex:alw}
+  We show the derivation of some rules to show the capabilities of the deduction system. First a variant of the
+  (ind) rule, $\phi \to \nextop{\phi} \vdash \phi \to \forever{\phi}$, which we will call (ind1):
+
+  \medskip
+  \begin{tabularx}{300pt}{cXl}
+    (1) & $\phi \to \nextop{\phi}$ & assumption \\
+    (2) & $\phi \to \phi$ & tautology \\
+    (3) & $\phi \to \forever{\phi}$ & (ind), (1), (2)
+  \end{tabularx}
+
+  \medskip
+  Next we show the (alw) rule, $\phi \vdash \forever{\phi}$, which will be useful later for the deduction theorems.
+
+  \medskip
+  \begin{tabularx}{300pt}{cXl}
+    (1) & $\phi$ & assumption \\
+    (2) & $\nextop{\phi}$ & (nex), (1) \\
+    (3) & $\phi \to \nextop{\phi}$ & (axiom 1), (2) \\
+    (4) & $\phi \to \forever{\phi}$ & (ind1), (3) \\
+    (5) & $\forever{\phi}$ & (mp), (1), (4) \\
+  \end{tabularx}
+\end{example}
+
 \begin{theorem}
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F \cup \set{\phi_1} \vdash \phi_2$ and this deriviation of $\phi_2$ does not contains application of the rule (par) for a variable occurring free in $\phi_1$, then $F \vdash \forever{\phi_1} \to \phi_2$.
+  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F \cup \set{\phi_1} \vdash
+  \phi_2$ and this deriviation of $\phi_2$ does not contains application of the rule (par) for a variable occurring free
+  in $\phi_1$, then $F \vdash \forever{\phi_1} \to \phi_2$.
 \end{theorem}
+\begin{proof}
+  TODO
+\end{proof}
+
+\begin{theorem}
+  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F \vdash \forever{\phi_1} \to
+  \phi_2$, then $F \cup \set{\phi_1} \vdash \phi_2$.
+\end{theorem}
+\begin{proof}
+  Assume $F \vdash \forever{\phi_1} \to \phi_2$, then $F \cup \set{\phi_1} \vdash \forever{\phi_1} \to \phi_2$ also
+  holds. By the (alw) rule~(\Cref{ex:alw}) and the trivial derivation $F \cup \set{\phi_1} \vdash \phi_1$ it follows
+  that $F \cup \set{\phi_1} \vdash \forever{\phi_1}$, then by (mp) rule it follows $F \cup \set{\phi_1} \vdash \phi_2$.
+\end{proof}
+
+\section{Missing axioms}
+Readers may have notice that some formulae that intuitively should be bidirectional are instead unidirectional in our
+model, e.g. the expansion of the forever operator~(\Cref{eq:foreversem}) and the axiom 4~(\Cref{def:axioms}). Moreover,
+another well studied formula that is often available in axiomatic systems for temporal logic, is the so-called Barcan
+formula, $\nextop{\existss{x_\tau}{\phi}} \to \existss{x_\tau}{\nextop{\phi}}$, which describes distributivity between
+first-order quantifiers and temporal operators.
+These issue are direct consequence of the increased generality of our model. In particular the first two examples can be
+solved by constraining the accessibility relation to a function, and thus each world has a single accessible world in
+its future, a standard assumption for the common linear temporal logic models.
+With this model we can transform axiom 4 into the formula $\neg\nextop{\phi} \leftrightarrow \nextop{\neg\phi}$, since
+the uniqueness of the transition solves the issue with the interplay between negation and universal quantification:
+\[
+  \begin{split}
+    \sem{\sigma}{w}{\Gamma}{\neg\nextop{\phi}}
+      &\Leftrightarrow \semn{cr \circ \sigma}{w'}{\Gamma}{\phi} \text{ where } \worldcr{w}{cr}{w'} \\
+      &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\nextop{\neg\phi}}
+  \end{split}
+\]
+
+This change, however, is still not sufficient for the Barcan formula.
+\[
+  \begin{split}
+    \sem{\sigma}{w}{\Gamma}{\nextop{\existss{x_\tau}{\phi}}}
+      &\Leftrightarrow \foralls{\worldcr{w}{cr}{w'}}{\existss{v \in d(w')}{\sem{\ext{x}{cr \circ \sigma}{v}}{w'}{\Gamma,x}{\phi}}} \\
+    \sem{\sigma}{w}{\Gamma}{\existss{x_\tau}{\nextop{\phi}}}
+      &\Leftrightarrow \existss{v \in d(w)}{\foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \ext{x}{\sigma}{v}}{w'}{\Gamma,x}{\phi}}}
+  \end{split}
+\]
+The existential operators on the two sides quantifies on different domains. Assume we have an accessibility relation
+where a world $w$ is related only to a world $w'$ where both domains are non-empty and the same algebra.  We will see if
+the Barcan formula holds for the formula $\phi \equiv x_\tau = c$ where $c$ is a constant of type $\tau$ in the algebra.
+Assume the two worlds are related by the counterpart relation $cr$ that is the empty relation. The formula
+$\nextop{\existss{x_\tau}{x = c}}$ is trivially satisfied by extending the empty substitution, since the formula is
+closed, with the value $c$ for the variable $x$. The other side is problematic, because the substitution can
+still be extended with the value $c$ for the variable $x$, however the composition with the counterpart relation reduces
+the association to be undefined, which does not satisfy the equality. Systems that include some form of the Barcan
+formula as an axiom, require domains be constant while traversing accessible worlds, or that domains do not grow or
+shrink, allowing at least one side of the implication. Beside philosophical question regarding the value of such axiom,
+we will not extend our model to include such axiom, as one of the main drive of this alternative interpretation of
+temporal formulae is the necessity of modeling systems with creation and deallocation of resources.

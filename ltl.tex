@@ -1,3 +1,10 @@
+In the following sections we will shortly summarise both syntax and semantics of linear temporal logic in the
+propositional form and show the issue of directly translating it to the quantified first-order version.
+Since many combinations of both unary and binary operators have been studied as forms of linear temporal logic, we will
+investigate only the somewhat common case of a logic with a singular primitive unary operation, \emph{next}, and a
+singularo primitive binary operation, \emph{until}. Nonetheless, both the classical approach and the one presented in
+this work can be trivially extended with other operators known in the literature, like \emph{unless}.
+
 \section{Syntax}
 
 \begin{definition}[Linear Temporal Logic]
@@ -7,7 +14,7 @@
     \phi \Coloneqq tt \;|\; p
                       \;|\; \neg\phi
                       \;|\; \phi \lor \phi
-                      \;|\; \next{\phi}
+                      \;|\; \nextop{\phi}
                       \;|\; \until{\phi}{\phi}
   \]
   where $p \in \text{PROP}$, $X$ is a unary operator which states that $\phi$ must hold at the next step and $U$ is a
@@ -17,19 +24,62 @@
 
 Classical propositional logic connetives can be derived trivially:
 \[
-  \phi_1 \land \phi_2 \equiv \neg(\neg\phi_1 \lor \neg\phi_2) \quad
-  \phi_1 \to \phi_2 \equiv \neg\phi_1 \lor \phi_2 \quad
-  \phi_1 \leftrightarrow \phi_2 \equiv (\phi_1 \to \phi_2) \land (\phi_2 \to \phi_1)
+  \phi_1 \land \phi_2 \equiv \neg(\neg\phi_1 \lor \neg\phi_2) \qquad
+  \phi_1 \to \phi_2 \equiv \neg\phi_1 \lor \phi_2
 \]
 
 Other temporal operators used in temporal logic literature are derivable as such:
 \[
-  \eventually{\phi} \equiv \until{tt}{\phi} \quad
-  \forever{\phi} \equiv \neg\eventually(\neg\phi) \quad
+  \eventually{\phi} \equiv \until{tt}{\phi} \qquad
+  \forever{\phi} \equiv \neg\eventually(\neg\phi) \qquad
   \weak{\phi_1}{\phi_2} \equiv (\until{\phi_1}{\phi_2}) \lor \forever{\phi_1}
 \]
 Intuitively $\eventually{\phi}$ means that eventually at some next step in time the formula $\phi$ holds,
 $\forever{\phi}$ means that the formula $\phi$ holds at each possible next step.
+
+\begin{figure}
+  \begin{center}
+  \begin{tikzpicture}[> = stealth', shorten > = 2pt, shorten < = 2pt, auto, node distance = 2cm, semithick]
+    \tikzstyle{vertex} = [circle, draw = black, thick, fill = white, minimum size = 2mm]
+    \node[vertex] (0u) [label=$\phi_1$] {};
+    \node[vertex] (1u) [right = 1cm of 0u, label=$\phi_1$] {};
+    \node[vertex] (2u) [right = 1cm of 1u, label=$\phi_1$] {};
+    \node[vertex] (3u) [right = 1cm of 2u, label=$\phi_2$] {};
+    \coordinate[right = 1cm of 3u] (4u);
+    \node[left = 1cm of 0u] (until) {$\phi_1\;U\,\phi_2$};
+
+    \path[->] (0u) edge [] (1u);
+    \path[->, dotted] (1u) edge [] (2u);
+    \path[->] (2u) edge [] (3u);
+    \path[->, dotted] (3u) edge [] (4u);
+
+    \node[vertex] (0f) [below = 1cm of 0u] {};
+    \node[vertex] (1f) [right = 1cm of 0f] {};
+    \node[vertex] (2f) [right = 1cm of 1f, label=$\phi$] {};
+    \node[vertex] (3f) [right = 1cm of 2f] {};
+    \coordinate[right = 1cm of 3f] (4f);
+    \node[left = 1cm of 0f] (eventually) {$F\phi$};
+
+    \path[->] (0f) edge [] (1f);
+    \path[->, dotted] (1f) edge [] (2f);
+    \path[->] (2f) edge [] (3f);
+    \path[->, dotted] (3f) edge [] (4f);
+
+    \node[vertex] (0g) [below = 1cm of 0f, label=$\phi$] {};
+    \node[vertex] (1g) [right = 1cm of 0g, label=$\phi$] {};
+    \node[vertex] (2g) [right = 1cm of 1g, label=$\phi$] {};
+    \node[vertex] (3g) [right = 1cm of 2g, label=$\phi$] {};
+    \coordinate[right = 1cm of 3g] (4g);
+    \node[left = 1cm of 0g] (forever) {$G\phi$};
+
+    \path[->] (0g) edge [] (1g);
+    \path[->, dotted] (1g) edge [] (2g);
+    \path[->] (2g) edge [] (3g);
+    \path[->, dotted] (3g) edge [] (4g);
+  \end{tikzpicture}
+  \end{center}
+  \caption{Example of temporal traces for operators}
+\end{figure}
 
 LTL formulae can encode safety properties, commonly with the form $G\neg\phi$, and liveness properties of systems,
 commonly with the form $GF\phi$ or $G(\phi_1 \to F\phi_2)$. Let's assume that we have two concurrent processes and that
@@ -44,9 +94,9 @@ infinitely often will reach the critical section.
 \section{Semantic}
 
 The de-facto standard semantics for Linear Temporal Logic and Temporal Logics in general are Kripke-style semantics, as
-for modal logics. In modal logic, the so-called Kripke-frames are pairs of worlds and an accessibility relation between
-worlds. For temporal logic, each world is a point in time and the accessibility relation models the flow of time, thus a
-temporal model is defined as:
+for modal logics. In modal logic, the so-called Kripke-frames are pairs of set of worlds and an accessibility relation
+between worlds. For temporal logic, each world is a point in time and the accessibility relation models the flow of
+time, thus a temporal model is defined as:
 
 \begin{definition}[Temporal model]
   A \emph{temporal model} $M$ is a triple $(T, \prec, L)$ where $T$ is a set of time-points, $\prec$ is an accessibility
@@ -65,7 +115,7 @@ time $t$ as a unique successor that we will denote with $s(t)$, and usually the 
     M, t &\vDash p &&\text{ iff } p \in L(t) \\
     M, t &\vDash \neg\phi &&\text{ iff } M, t \nvDash \phi \\
     M, t &\vDash \phi_1 \lor \phi_2 &&\text{ iff } M, t \vDash \phi_1 \text{ or } M, t \vDash \phi_2 \\
-    M, t &\vDash \next{\phi} &&\text{ iff } M, s(t) \vDash \phi \\
+    M, t &\vDash \nextop{\phi} &&\text{ iff } M, s(t) \vDash \phi \\
     M, t &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } \exists t' \geq t \ldotp M, t' \vDash \phi_2 \text{ and } \forall t
       \leq t'' < t' \ldotp M, t'' \vDash \phi_1 \\
   \end{align*}
@@ -73,14 +123,27 @@ time $t$ as a unique successor that we will denote with $s(t)$, and usually the 
 
 \section{First-Order Extension}
 
-\begin{definition}[First-Order Linear Temporal Logic]
+LTL can be extended to a first-order calculus by introducing predicates and variables, in the same vein as the
+transition from propositional to first-order logic in the classical framework. Naturally, because we are additionally
+working with time-dependent components, predicate symbols and variables can be interpreted differently at different
+point in time. Symbols that are established to be time-dependent are called \emph{flexible}, conversely time-independent
+symbols are called \emph{rigid}.
+
+Nonetheless both classical logic and linear temporal logic have in common the trait of becoming indecidable when passing
+from propositional calculi to first-order calculi. Furthermore First-Order Linear Temporal Logic is proven to be also
+incomplete.
+
+In the following paragraphs we will show a general syntax and semantics of First-Order Linear Temporal Logic, what are
+the condition for completeness and some of the issue with the most common semantic.
+
+\begin{definition}[First-Order Linear Temporal Logic]\label{def:kripkefoltlsyn}
   Let $\mathcal{P}$ be a set of predicates each with a specific arity, and let $X$ be a denumerable set of variables.
   The set $\mathcal{F}_{FO}$ of formulae for First-Order Linear Temporal Logic is the set generated by the following grammar:
   \[
     \phi \Coloneqq tt \;|\; P(x_1, \ldots, x_n)
                       \;|\; \neg\phi
                       \;|\; \phi \lor \phi
-                      \;|\; \next{\phi}
+                      \;|\; \nextop{\phi}
                       \;|\; \until{\phi}{\phi}
                       \;|\; \existss{x}{\phi}
   \]
@@ -91,10 +154,14 @@ Universal quantification can be modeled with the translation from the existentia
   \foralls{x}{\phi} \equiv \neg\existss{x}{\neg\phi}
 \]
 
-Example of properties can be modeled with the first-order extension are $\existss{x}{G(\text{channel}(x) \land
-\text{open}(x))}$ with the intuitive meaning that there must always exists at least one open channel; or
-$\foralls{x}{G(\text{channel}(x) \to (\until{\text{open}(x)}{(\neg\existss{y}{\text{message}(y) \land \text{pending}(x,
-y)})}))}$
+Example of properties can be modeled with the first-order extension are:
+\[
+  \existss{x}{G(\text{channel}(x) \land \text{open}(x))}
+\]
+with the intuitive meaning that there must always exists at least one open channel; or:
+\[
+  \foralls{x}{G(\text{channel}(x) \to (\until{\text{open}(x)}{(\neg\existss{y}{\text{message}(y) \land \text{pending}(x, y)})}))}
+\]
 which intuitively means that channels must always remain open until there are no more pending messages on that channel.
 
 For quantified LTL we need to extend the temporal frames with the domain of values that makes sense to talk about at
@@ -123,7 +190,7 @@ $I^\sigma$.
     M, t, I^\sigma &\vDash \neg\phi &&\text{ iff } M, t, I^\sigma \nvDash \phi \\
     M, t, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{ iff } M, t, I^\sigma \vDash \phi_1 \text{ or } M, t, I^\sigma
       \vDash \phi_2 \\
-    M, t, I^\sigma &\vDash \next{\phi} &&\text{ iff } M, s(t), I^\sigma \vDash \phi \\
+    M, t, I^\sigma &\vDash \nextop{\phi} &&\text{ iff } M, s(t), I^\sigma \vDash \phi \\
     M, t, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } \exists t' \geq t \ldotp M, t', I^\sigma \vDash \phi_2
       \text{ and } \forall t \leq t'' < t' \ldotp M, t'', I^\sigma \vDash \phi_1 \\
     M, t, I^\sigma &\vDash \existss{x}{\phi} &&\text{ iff } \existss{v \in d(t)}{M, t, I^{\sigma[v/x]} \vDash \phi} \\
@@ -131,12 +198,15 @@ $I^\sigma$.
 \end{definition}
 
 \section{Trans-World Identity}
+
 Kripke-frames requires that the so-called outer domains $D(t)$ are always increasing with time, i.e. if $t \prec t'$
 then $D(t) \subseteq D(t')$. This condition is required to evaluate temporal operators, otherwise it would not be
-possible to denote a variable $x$ in the future.
-However, by imposing such condition we are identifying object \emph{a priori} and universally, irrespective of
-time. This problem is called \emph{trans-world identity} and extensive literature about it has been produced in the last
-half-century, be either philosophycal questions and possible solutions with Kripke-style semantics.
+possible to denote a variable $x$ in the future. Other works fix a universal domain equal for each point in time, thus
+$D(t) = D(t')$ for each $t, t' \in T$.  However, by imposing such condition we are identifying object \emph{a priori}
+and universally, irrespective of time. This problem is called \emph{trans-world identity} and extensive literature about
+it has been produced in the last half-century, be either philosophycal questions or possible pratical solutions with
+Kripke-style semantics.
+
 Even with the additional constraints on object domains, there are still other issues with Kripke-style semantics and the
 system we are trying to model. Assume we are trying to model resource allocation in a complex system. Let $i$ be a
 resource. Due to the outer domain condition, we can identify the exact point in time where the resource $i$ is
@@ -144,8 +214,10 @@ allocated, i.e. $i \in D(t)$ for some time point $t$. Note that the resource can
 for a potentially infinite amount of time, since it may not belong to any inner domain, not even $d(t)$. However, at the
 same time, we cannot deallocate the resource $i$ since it must always be referentiable at future point in times. This
 can be solved with infinite outer domains to ensure uniqueness or by restricting the class of admissible evolutions, but
-such solutions tend to hamper usability. Another desiderable behaviour is merging, for example while
-modeling memory allocations, we may want to merge two memory allocated segments into a single segment and treat it as a
-single resource.
+such solutions tend to hamper usability.
+
+Another desiderable behaviour is merging, for example while modeling memory allocations, we may want to merge two memory
+allocated segments into a single segment and treat it as a single resource.
+
 In the next chapter we will explore an alternative approach based on \emph{counterpart relations}, which rejects the
 possibility of universally identifying objects among possible worlds.

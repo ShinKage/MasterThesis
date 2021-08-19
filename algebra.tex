@@ -1,4 +1,4 @@
-\section{Algebra}
+\section{Algebra}\label{sec:algebra}
 
 \begin{definition}[Many-sorted Signature]
   A \emph{many-sorted signature} $\Sigma$ is a pair $(S_\Sigma, F_\Sigma)$ where $S_\Sigma = \set{\tau_1, \ldots,
@@ -6,12 +6,22 @@
   \in \Sigma_\tau, i = 1, \ldots, n}$ is a set of function symbols.
 \end{definition}
 
+We show a couple of signatures that will be used throughout the work. First, let's model simple directed graphs, which
+have two sorts: vertices, $\tau_v$, and edges $\tau_e$. Naturally to identify edges we require two operations, $s$, $t$
+both of type $\tau_e \to \tau_v$, which respectively identify the source and target of a given edge. Thus the complete
+signature for simple directed graph is $\Sigma = (\set{\tau_v, \tau_e}, \set{s : \tau_e \to \tau_v, t : \tau_e \to
+\tau_v})$.
+
+Next we present the signature for a simplified memory management model. Once again we have two sorts: objects, $\tau_o$, and
+memory locations $\tau_l$. The only operation is the function that associate to each object it's memory location,
+$\rho$. Thus the complete signature is $\Sigma = (\set{\tau_o, \tau_l}, \set{\rho : \tau_o \to \tau_l})$.
+
 \begin{definition}[Many-sorted Algebra]
-  A \emph{many-sorted algebra} $\algebra{A}$ with signature $\Sigma$, or $\Sigma$-algebra, is a pair $(A,
-  F_\Sigma^\algebra{A})$ such that:
+  A \emph{many-sorted algebra} $\algebra{A}$ with signature $\Sigma = (S_\Sigma, F_\Sigma)$, or $\Sigma$-algebra, is a
+  pair $(A, F_\Sigma^\algebra{A})$ such that:
   \begin{itemize}
-    \item $A$ is a family of carrier sets indexed by the sorts of $\Sigma$;
-    \item $F_\Sigma^\algebra{A}$ is a family of functions indexed by the function symbols of $\Sigma$,
+    \item $A$ is a family of carrier sets, indexed by the sorts of $\Sigma$;
+    \item $F_\Sigma^\algebra{A}$ is a family of functions, indexed by the function symbols in $F_\Sigma$,
       $\set{f_\Sigma^\algebra{A} : A_{\tau_1} \times \cdots \times A_{\tau_n} \to A_\tau | f_\Sigma : \tau_1 \times
       \cdots \times \tau_n \to \tau \in F_\Sigma}$.
   \end{itemize}
@@ -27,15 +37,63 @@
   \ldots, \rho_{\tau_n}(a_n))$.
 \end{definition}
 
-\begin{example}[Graph algebra]
-  Simple directed graphs can be modeled by the signature $\Sigma = (\set{\tau_v, \tau_e}, \set{s : \tau_e \to \tau_v, t
-  : \tau_e \to \tau_v})$, where $\tau_v$ is the sort of vertices, $\tau_e$ is the sort of edges and $s$, $t$ determine
-  respectively the source and target vertex for a given edge. Each $\Sigma$-algebra for this signature is a particular
-  graph, i.e. the graphs in figure 1 are visual representations of the following algebras: $\algebra{G}_0 =
-  (\set{\set{n_0, n_1, n_2},\set{e_0, e_1, e_2}}, \set{s^{\algebra{G}_0}, t^{\algebra{G}_0}})$, where $s^{\algebra{G}_0} =
-  \set{e_0 \mapsto n_0, e_1 \mapsto n_1, e_2 \mapsto n_2}$ and $t^{\algebra{G}_0} = \set{e_0 \mapsto n_1, e_1 \mapsto
-  n_2, e_2 \mapsto n_0}$.
-\end{example}
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}[> = stealth', shorten > = 2pt, shorten < = 2pt, auto, node distance = 2cm, semithick]
+      \tikzstyle{vertex} = [circle, draw = black, thick, fill = white, minimum size = 2mm]
+      \node[vertex] (n0) [] {$n_0$};
+      \node[vertex] (n1) [above right = 0.5cm and 1.2cm of n0] {$n_1$};
+      \node[vertex] (n2) [below right = 0.5cm and 1.2cm of n0] {$n_2$};
+      \path[->] (n0) edge [bend left] node (e0) {$e_0$} (n1);
+      \path[->] (n1) edge [bend left] node (e1) {$e_1$} (n2);
+      \path[->] (n2) edge [bend left] node (e2) {$e_2$} (n0);
+
+      \node[vertex] (n3) [right = 3cm of n2] {$n_3$};
+      \node[vertex] (n4) [right = 3cm of n1] {$n_4$};
+      \path[->] (n3) edge [bend right] node [swap] (e3) {$e_3$} (n4);
+      \path[->] (n4) edge [bend right] node [swap] (e4) {$e_4$} (n3);
+
+      \node[vertex] (n5) [right = 3cm of n4] {$n_5$};
+      \node[vertex] (n6) [right = 3cm of n3] {$n_6$};
+      \node[vertex] (n7) [right = 1.2cm of n5] {$n_7$};
+      \path[->] (n5) edge [bend right] node [swap] (e5) {$e_5$} (n6);
+      \path[->] (n6) edge [bend right] node [swap] (e6) {$e_6$} (n5);
+      \path[->] (n5) edge [] node (e7) {$e_7$} (n7);
+      \path[->] (n7) edge [loop below] node (e8) {$e_8$} (n7);
+
+      \path[->, dotted, black!50] (n1) edge [bend left] (n4);
+      \path[->, dotted, black!50] (n2) edge [bend right] (n3);
+      \path[->, dotted, black!50, shorten > = -4pt, shorten < = -4pt] (e1) edge [] (e4);
+
+      \path[->, dotted, black!50] (n4) edge [bend left] (n5);
+      \path[->, dotted, black!50] (n3) edge [bend right] (n6);
+      \path[->, dotted, black!50, shorten > = -4pt, shorten < = -4pt] (e4) edge [bend left] (e5);
+      \path[->, dotted, black!50, shorten > = -4pt, shorten < = -4pt] (e3) edge [bend right] (e6);
+
+    \end{tikzpicture}
+  \end{center}
+  \caption{Examples of simple directed graphs}
+  \label{fig:egsdgraphs}
+\end{figure}
+
+Recall the signature for simple directed graphs defined earlier, a $\Sigma$-algebra for that signature is a particular
+instance of a simple directed graph and homomorphism between them are partial homomorphism between graphs. For example
+the graphs in \autoref{fig:egsdgraphs} are visual representation of the following algebras: $\algebra{G}_0 =
+(\set{\set{n_0, n_1, n_2},\set{e_0, e_1, e_2}}, \set{s^{\algebra{G}_0}, t^{\algebra{G}_0}})$, where $s^{\algebra{G}_0} =
+\set{e_0 \mapsto n_0, e_1 \mapsto n_1, e_2 \mapsto n_2}$ and $t^{\algebra{G}_0} = \set{e_0 \mapsto n_1, e_1 \mapsto n_2,
+e_2 \mapsto n_0}$; $\algebra{G}_1 = (\set{\set{n_3,n_4},\set{e_3,e_4}},\set{s^{\algebra{G}_1},t^{\algebra{G}_1}})$,
+where $s^{\algebra{G}_1} = \set{e_3 \mapsto n_3, e_4 \mapsto n_4}$ and $t^{\algebra{G}_1} = \set{e_3 \mapsto e_3, e_4
+\mapsto n_3}$.  $\algebra{G}_2 =
+(\set{\set{n_5,n_6,n_7},\set{e_5,e_6,e_7,e_8}},\set{s^{\algebra{G}_2},t^{\algebra{G}_2}})$, where $s^{\algebra{G}_2} =
+\set{e_5 \mapsto n_5,e_6 \mapsto n_6,e_7\mapsto n_5, e_8 \mapsto n_7}$ and $t^{\algebra{G}_2} = \set{e_5 \mapsto n_6,e_6
+\mapsto n_5,e_7 \mapsto n_7, e_8 \mapsto n_7}$.
+
+In the same figure are also visually represented partial homomorphism between those graphs that can be translated to:
+$\algebra{G}_0 \to \algebra{G}_1 = \set{\set{n_1 \mapsto n_4,n_2 \mapsto n_3},\set{e_1 \mapsto e_4}}$ and $\algebra{G}_1
+\to \algebra{G}_2 = \set{\set{n_4 \mapsto n_5, n_3 \mapsto n_6},\set{e_4 \mapsto e_5, e_3 \mapsto e_6}}$, where the
+requirements for homomorphism are trivially checkable. Notice that the first example of homomorphism shows an interesting
+behaviour for our purpose. Due to partiality it removes the node $n_0$ and the edges $e_0$, $e_2$ while preserving the
+structure of the nodes $n_1$, $n_2$ and the edge $e_1$ between them.
 
 To model existential properties, we can extend a signature $\Sigma$ with a denumerable set $X$ of variables typed over
 $S_\Sigma$, obtaining the signature $\Sigma_X$. The $\tau$-typed subset of $X$ is denoted with $X_\tau$, and typed
@@ -62,8 +120,8 @@ variables are denoted with $x_\tau$ or $x : \tau$. $\tau$-sorted terms are denot
 
 \begin{example}[Terms]
   Let be $\Sigma = (\set{\tau}, \set{1 : \tau, \otimes : \tau \to \tau})$ a monoidal signature with a single sort. Let
-  be $X$ a denumerable set of variables with $x, y, z \in X$, then some example of terms in
-  $\terms{\Sigma}{X}$ are $1 \otimes 1 : \tau$, $x \otimes y \otimes 1$ and $(x \otimes 1) \otimes (1
-  \otimes y)$. Examples from the previously defined graph algebra $\Sigma$ are $s(x_{\tau_e})$ and $t(y_{\tau_e})$ which
-  represent respectively the source vertex for an edge $x_{\tau_e}$ and the target vertex for an edge $y_{\tau_e}$.
+  be $X$ a denumerable set of variables with $x, y, z \in X$, then some example of terms in $\terms{\Sigma}{X}$ are $1
+  \otimes 1 : \tau$, $x \otimes (y \otimes 1) : \tau$ and $(x \otimes 1) \otimes (1 \otimes y) : \tau$. Examples from
+  the previously defined graph algebra $\Sigma$ are $s(x)$ and $t(y)$ which represent respectively the source vertex for
+  an edge $x : \tau_e$ and the target vertex for an edge $y : \tau_e$.
 \end{example}

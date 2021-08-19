@@ -11,9 +11,14 @@
 \usepackage{stmaryrd}
 \usepackage{braket}
 \usepackage{ebproof}
+\usepackage{tabularx}
 
 \usepackage{hyperref}
 \usepackage{cleveref}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows, cd, positioning}
+\tikzcdset{arrow style=tikz, diagrams={>=stealth'}}
 
 \usepackage{microtype}
 
@@ -44,6 +49,8 @@
 \input{ltl}
 
 \chapter{Counterpart Semantic}
+In this chapter we will introduce both syntax and semantics of the calculus, however we will use many-sorted algebras as
+models for the evaluation of the formulae.
 \input{algebra}
 \input{counterpart}
 \input{syntax}
@@ -51,5 +58,8 @@
 
 \chapter{Proof System}
 \input{axioms}
+
+\chapter{Extensions}
+\input{extensions}
 
 \end{document}
