@@ -314,3 +314,48 @@ formula as an axiom, require domains be constant while traversing accessible wor
 shrink, allowing at least one side of the implication. Beside philosophical question regarding the value of such axiom,
 we will not extend our model to include such axiom, as one of the main drive of this alternative interpretation of
 temporal formulae is the necessity of modeling systems with creation and deallocation of resources.
+
+\section{Completeness and Decidability}
+
+The model presented in this work is not exempt from all the consideration on completeness available in literature for
+quantified temporal logic. Since the signature and the axioms for the theory of natural numbers can be encoded in our
+system, it follows that our logic is incomplete.
+\begin{example}
+  The theory of natural numbers can be encoded with the following signature $\Sigma = (S_\Sigma, F_\Sigma)$ where
+  \[
+    \begin{split}
+      S_\Sigma &= \set{\tau_\mathbb{N}} \\
+      F_\Sigma &= \set{0 : \tau_\mathbb{N}, s : \tau_\mathbb{N} \to \tau_\mathbb{N}, + : \tau_\mathbb{N} \times
+      \tau_\mathbb{N} \to \tau_\mathbb{N}, \times : \tau_\mathbb{N} \times \tau_\mathbb{N} \to \tau_\mathbb{N}}
+    \end{split}
+  \]
+  and by models where the following additional axioms are true:
+  \begin{itemize}
+    \item $s(x) \neq 0$
+    \item $s(x) = s(y) \to x = y$
+    \item $s(x) \neq 0 \to \existss{y_{\tau_\mathbb{N}}}{x = s(y)}$
+    \item $x + 0 = x$
+    \item $x + s(y) = s(x + y)$
+    \item $x \times 0 = 0$
+    \item $x \times s(y) = (x \times y) + x$
+  \end{itemize}
+  and the following axiom for the scheme of induction, where $\phi$ is a formula with $x$ free:
+  \[
+    \phi[0/x] \land (\foralls{x_{\tau_\mathbb{N}}}{\phi \to \phi[s(x)/x]}) \to \foralls{x_{\tau_\mathbb{N}}}{\phi}
+  \]
+\end{example}
+
+More articulated is, instead, the case for decidability. Previous results show that FO-LTL is not only undecidable in
+general, but in a multi-sorted context is not even semi-decidable. However, researches also showed that there are
+reasonable fragments that are, indeed, decidable but with serious restrictions. The main issue is the interaction
+between temporal operators and quantifiers, in particular the until operator. One approach is to limit the number of
+variables quantified within the scope of temporal operators, in particular restricting temporal formulae to be monodic,
+thanks to decidability results on monodic second-order logic. Another approach is to limit the nestedness of operators,
+for example we must avoid nested forever operators, or the usage of temporal operators inside the scope of a universal
+quantifier. Nonetheless, there are still issues with classical operators, and we must restrict also the usage of those
+to an arbitrary decidable fragment of first-order classical logic. Lastly, we can limit the domains of the models to
+finitary ones, therefore not only the set of worlds is finite, but also the algebras must be finite. These restriction
+are strict enough to obtain a decidable fragment of the second-order $\mu$-calculus, which subsumes temporal logic.
+
+A future objective is to investigate further this matter of decidability, as one of the objective of this model is to be
+useful, and even simplier, for model checking purposes.

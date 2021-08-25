@@ -31,7 +31,9 @@ arbitrarily complex within themselves.
 For the rest of the work, we will implicitly assume that every counterpart model $M$ does not have deadlock worlds, i.e.
 worlds without outgoing transitions. This condition is not a limitation since a counterpart model that does not satisfy
 the condition can be transformed into one that does satisfy it by adding a reflexive transition to the accessibility
-relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in \rightsquigarrow$.
+relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in \rightsquigarrow$, or an ad-hoc world
+with only a reflexive transition. Such modification is typical of other works in the field, it does not impact the
+results of this work and it meaningful simplifies the semantics presented here.
 
 \begin{definition}
   Let $X$ be a denumerable sets of variables, and $M = (W, \rightsquigarrow, d)$ be a counterpart model over a signature
@@ -41,11 +43,9 @@ relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in \
 
 Given a term $\epsilon \in \terms{\Sigma}{X}$ and an assignment $\sigma$, we will denote as
 $\sigma(\epsilon)$ the lifting of $\sigma$ to the set $\terms{\Sigma}{X}$, i.e. applying the substition $\sigma$ to each
-free variable in the term $\epsilon$. If any of the free
-variables in $\epsilon$ are not in the domain of $\sigma$ than $\sigma(\epsilon)$ is undefined.
+free variable in the term $\epsilon$. If any of the free variables in $\epsilon$ are not in the domain of $\sigma$ than $\sigma(\epsilon)$ is undefined.
 
-The set of of pairs $(\sigma, w)$ with $\sigma$ a variable assignment over the world $w$ in the counterpart model $M$ is
-denoted as $\universe{}(M)$. When clear from context, we will omit the counterpart model. The set of pairs where the
-domain of $\sigma$ is a subset of the first-order context $\Gamma$ will be denoted as $\universe{\Gamma}$.
-Notice that a pair $(\sigma, w) \in \universe{\Gamma}$ may be undefined over some or all the elements of $\Gamma$,
-addressing the need of modeling deallocation of items.
+From now on, we will consider only \emph{formulae-in-context}, i.e. formulae with an appropriate context $\Gamma$ that
+must contain at least all the free variables in the formula. Consequently, substitutions for a formula $\phi$ in a
+context $\Gamma$, will be defined over the context gamma. Note that the substitution can still be undefined over some
+or all the values in the domain of $\Gamma$, addressing the need of modeling deallocation of items.

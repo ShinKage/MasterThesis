@@ -104,9 +104,8 @@ time, thus a temporal model is defined as:
   returns the subset of all atomic propositions which are valid at that point.
 \end{definition}
 
-Additionally, the pair $(T, \prec)$ is called a temporal frame. For linear temporal logic in particular each point in
-time $t$ as a unique successor that we will denote with $s(t)$, and usually the chosen temporal frame is $(\mathbb{N},
-<)$.
+Additionally, the pair $(T, \prec)$ is called a temporal frame.
+
 \begin{definition}[LTL semantic]
   The truthness of a LTL formula $\phi$ at the time-point $t$ over the temporal model $M$, denoted as
   $M, t \vDash \phi$ is defined inductively as follows:
@@ -115,9 +114,9 @@ time $t$ as a unique successor that we will denote with $s(t)$, and usually the 
     M, t &\vDash p &&\text{ iff } p \in L(t) \\
     M, t &\vDash \neg\phi &&\text{ iff } M, t \nvDash \phi \\
     M, t &\vDash \phi_1 \lor \phi_2 &&\text{ iff } M, t \vDash \phi_1 \text{ or } M, t \vDash \phi_2 \\
-    M, t &\vDash \nextop{\phi} &&\text{ iff } M, s(t) \vDash \phi \\
-    M, t &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } \exists t' \geq t \ldotp M, t' \vDash \phi_2 \text{ and } \forall t
-      \leq t'' < t' \ldotp M, t'' \vDash \phi_1 \\
+    M, t &\vDash \nextop{\phi} &&\text{ iff } \foralls{t \prec t'}{M, t' \vDash \phi} \\
+    M, t &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } M, t \vDash \phi_2 \text{ or } (M, t \vDash \phi_1 \text{ and }
+      \foralls{t \prec t'}{M, t' \vDash \until{\phi_1}{\phi_2}})
   \end{align*}
 \end{definition}
 
@@ -169,9 +168,9 @@ each points in time.
 
 \begin{definition}[Kripke frame]
   A \emph{Kripke frame} $M$ is a quadruple $(T, \prec, D, d)$ where $T$ is a set of time-points, $\prec$ is an
-  accessibility
-  relations over $T$, $D$ is a function assigning to each point in time $t$ a non-empty set $D(t)$ s.t. if $t \prec t'$
-  then $D(t) \subseteq D(t')$, $d$ is a function assigning to each point in time $t$ a set $d(t) \subseteq D(t)$.
+  accessibility relation over $T$, $D$ is a function assigning to each point in time $t$ a non-empty set $D(t)$ s.t.
+  if $t \prec t'$ then $D(t) \subseteq D(t')$, $d$ is a function assigning to each point in time $t$ a set $d(t)
+  \subseteq D(t)$.
 \end{definition}
 Intuitively, the so-called outer domains $D(t)$ represent the collection of object that can be referenced at the point
 in time $t$, conversely the so-called inner domains $d(t)$ represent the collection of object actually existing the
@@ -186,14 +185,14 @@ $I^\sigma$.
   interpretation $I^\sigma$, denoted as $M, t, I^\sigma \vDash \phi$ is defined inductively as follows:
   \begin{align*}
     M, t, I^\sigma &\vDash tt && \\
-    M, t, I^\sigma &\vDash P(x_1, \ldots, x_n) &&\text{ iff } (\sigma(x_1), \ldots, \sigma(x_2)) \in I^\sigma(P, t) \\
-    M, t, I^\sigma &\vDash \neg\phi &&\text{ iff } M, t, I^\sigma \nvDash \phi \\
-    M, t, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{ iff } M, t, I^\sigma \vDash \phi_1 \text{ or } M, t, I^\sigma
+    M, t, I^\sigma &\vDash P(x_1, \ldots, x_n) &&\text{iff } (\sigma(x_1), \ldots, \sigma(x_2)) \in I^\sigma(P, t) \\
+    M, t, I^\sigma &\vDash \neg\phi &&\text{iff } M, t, I^\sigma \nvDash \phi \\
+    M, t, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{iff } M, t, I^\sigma \vDash \phi_1 \text{ or } M, t, I^\sigma
       \vDash \phi_2 \\
-    M, t, I^\sigma &\vDash \nextop{\phi} &&\text{ iff } M, s(t), I^\sigma \vDash \phi \\
-    M, t, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } \exists t' \geq t \ldotp M, t', I^\sigma \vDash \phi_2
-      \text{ and } \forall t \leq t'' < t' \ldotp M, t'', I^\sigma \vDash \phi_1 \\
-    M, t, I^\sigma &\vDash \existss{x}{\phi} &&\text{ iff } \existss{v \in d(t)}{M, t, I^{\sigma[v/x]} \vDash \phi} \\
+    M, t, I^\sigma &\vDash \nextop{\phi} &&\text{iff } \foralls{t \prec t'}{M, t', I^\sigma \vDash \phi} \\
+    M, t, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } M, t, I^\sigma \vDash \phi_2 \text{ or }
+      (M, t, I^\sigma \vDash \phi_1 \text{ and } M, t', I^\sigma \vDash \until{\phi_1}{\phi_2}) \\
+    M, t, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(t)}{M, t, I^{\sigma[v/x]} \vDash \phi} \\
   \end{align*}
 \end{definition}
 
@@ -202,7 +201,8 @@ $I^\sigma$.
 Kripke-frames requires that the so-called outer domains $D(t)$ are always increasing with time, i.e. if $t \prec t'$
 then $D(t) \subseteq D(t')$. This condition is required to evaluate temporal operators, otherwise it would not be
 possible to denote a variable $x$ in the future. Other works fix a universal domain equal for each point in time, thus
-$D(t) = D(t')$ for each $t, t' \in T$.  However, by imposing such condition we are identifying object \emph{a priori}
+$D(t) = D(t')$ for each $t, t' \in T$, which also follows from accessibility relations that contain loops.
+However, by imposing such condition we are identifying object \emph{a priori}
 and universally, irrespective of time. This problem is called \emph{trans-world identity} and extensive literature about
 it has been produced in the last half-century, be either philosophycal questions or possible pratical solutions with
 Kripke-style semantics.

@@ -1,6 +1,6 @@
 \section{Semantics}
 
-\begin{definition}[Semantic of FO-LTL]
+\begin{definition}[Semantic of FO-LTL]\label{def:fosemantic}
 Let $M$ be a counterpart model, $\Gamma$ a context and $(\sigma, w)$ a pair substitution-world in the context $\Gamma$.
 The validity of a formula-in-context $\phi$, denoted $\sem{\sigma}{w}{\Gamma}{\phi}$, is defined inductively as follows:
 \begin{align*}
@@ -10,15 +10,15 @@ The validity of a formula-in-context $\phi$, denoted $\sem{\sigma}{w}{\Gamma}{\p
   (\sigma, w) &\vDash_\Gamma \phi_1 \lor \phi_2
       &&\text{ iff } \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \sem{\sigma}{w}{\Gamma}{\phi_2} \\
   (\sigma, w) &\vDash_\Gamma \existss{x_\tau}{\phi}
-      &&\text{ iff } \existss{v \in d(w)}{\sem{\text{ext}_x(\sigma, v)}{w}{\Gamma, x}{\phi}} \\
+      &&\text{ iff } \existss{v \in d(w)}{\sem{\text{ext}_x(\sigma, v)}{w}{\Gamma, x}{\phi}}
+      \text{ with } x \not\in \Gamma \\
   (\sigma, w) &\vDash_\Gamma \nextop{\phi}
       &&\text{ iff } \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}} \\
   (\sigma, w) &\vDash_\Gamma \until{\phi_1}{\phi_2}
       &&\text{ iff } \sem{\sigma}{w}{\Gamma}{\phi_2} \text{ or } (\sem{\sigma}{w}{\Gamma}{\phi_1}
           \text { and } \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\until{\phi_1}{\phi_2}}}) \\
 \end{align*}
-  Where $\text{ext}_x : (\Gamma \rightharpoonup d(w)) \times d(w) \to (\Gamma \cup \set{x} \rightharpoonup d(w))$ with
-  $x \not\in \Gamma$, defined as:
+  Where $\text{ext}_x : (A \rightharpoonup B) \times B \to (A \cup \set{x} \rightharpoonup B)$ is defined as:
   \[
     \text{ext}_x(\sigma, v)(y) = \begin{cases} v & \text{if } y = x \\ \sigma(y) & \text{otherwise}\end{cases}
   \]
@@ -44,10 +44,8 @@ operator.
 \begin{definition}
   A formula $\phi \in \mathcal{F}_\Sigma$ is called a \emph{consequence} of a set $F \subseteq \mathcal{F}_\Sigma$,
   denoted $F \vDash \phi$, if $\vDash_M \phi$ holds for every model $M$ with $\vDash_M \psi$ for all $\psi \in F$.
-\begin{definition}
-\end{definition}
-  A formula $\phi \in \mathcal{F}_\Sigma$ is called \emph{valid}, denoted by $\vDash \phi$, if $\emptyset \vDash \phi$
-  holds.
+
+  If $F$ is empty, then the formula is called \emph{valid}, denoted by $\vDash \phi$.
 \end{definition}
 
 \section{Other operators}
@@ -87,6 +85,13 @@ Let's explore the semantics of the other common operators defined in the previou
         \existss{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}}} \notag \\
     &\Leftarrow \sem{\sigma}{w}{\Gamma}{\phi \land \nextop{\forever{\phi}}} \label{eq:foreversem}
 \end{align}
+
+The semantics of the derived operator matches our intuition, however the expansion rule for the forever operator is not
+bidirectional, as for an arbitrary pair $(\sigma, w)$ there could be multiple accessible world from $w$ and only some of
+them satisfy the body of the quantifier. Nonetheless, this is issue is marginal for two reason. First, if
+$\forever{\phi}$ is valid within the model $M$ then the implication becomes bidirectional. Second, typically the
+accessibility relation in the models are linear order, in particular traces of a transition system, which once again
+solves the issue.
 
 \section{Example of execution}
 
