@@ -26,12 +26,20 @@ of operators indexed by the sorts of the signature.
 
 \begin{example}
   Let's model some general properties that can be resonable in a large space of signatures, as a consequence these will
-  really be a family of typed predicates. Let's start with a predicate that identifies entities that will be deleted in
-  the next step: $\text{will-be-deleted}(x_\tau) \equiv (\existss{y_\tau}{x = y}) \land \nextop{(\neg\existss{y_\tau}{x =
-  y})}$. Another example is $\text{will-merge}(x_\tau, y_\tau) \equiv (\existss{z_\tau}{\existss{w_\tau}{\until{(x \neq
-  y \land x = z \land y = w)}{(\existss{z_\tau}{x = y \land x = z \land y = z})}}})$, which intuitively means that the arguments of
+  really be a family of typed predicates. We will start with simple predicates that exemplifies some of the feature of
+  such a language in isolation: we first need to identify entities which are available in a given world,
+  $\text{presence}(x_\tau) \equiv \existss{y_\tau}{x = y}$, then we can construct simple temporal formulae, for example
+  we can require that an entity is always present $\forever{\text{presence}(x_\tau)}$ or that it will be deleted in the next
+  step, $\text{will-delete}(x_\tau) \equiv \text{presence}(x_\tau) \land \nextop{\neg\text{presence}(x_\tau)}$ or at some
+  point in the future, never to be allocated again: $\text{perm-deallocate}(x_\tau) \equiv \text{presence}(x_\tau) \land \eventually{\forever{\neg\text{presence}(x_\tau)}}$
+  Conversely to deallocation, we can model allocations and creation of entities by reversing the deletion formula
+  $\text{one-new}(x_\tau) \equiv \neg\text{presence}(x_\tau) \land \nextop{\neg\text{presence}(x_\tau)}$. For example
+  we can require entities to be always allocated and then deallocated in a managed memory context:
+  $\forever{\foralls{x_\tau}{\eventually{\text{one-new}(x) \land \eventually{\text{perm-deallocate}(x_\tau)}}}}$.
+  Another example is $\text{will-merge}(x_\tau, y_\tau) \equiv \until{(presence(x) \land presence(y) \land x \neq y)}{(presence(x) \land presence(y) \land x = y)}$, which intuitively means that the arguments of
   the predicate will necessarily merge into a single entity in the current world or at some point in the future.
-  Recall the signature for simple directed graphs introduced in~\autoref{sec:algebra}, we can define predicates on the
+
+  Recall the signature for simple directed graphs introduced in~\Cref{sec:algebra}, we can define predicates on the
   structure of the worlds, e.g. $\text{loop}(x_{\tau_e}) \equiv s(x) = t(x)$ which means that the edge $x$ must be a
   loop in the worlds that satisfy the predicate. We can also model the evolution of complex structures, e.g.
   $\text{at-most-2}_\tau \equiv \foralls{x_\tau}{\foralls{y_\tau}{\foralls{z_\tau}{x = y \lor y = z \lor z = x}}}$ is
@@ -41,6 +49,6 @@ of operators indexed by the sorts of the signature.
   spawned during the whole execution is bounded by some number $n$ than we must verify the formula
   $\forever{\text{at-most-n}}$; or we may want to make sure that after reaching maximum capacity, the programs
   continously deallocate channels until a minimum bound $m$ is reached, thus $\forever{(\text{at-most-n} \land (\text{exactly-n} \to
-  \until{(\existss{x}{\text{will-be-deleted(x)}})}{\text{at-most-m}}))}$, where $\text{exactly-n}$ is a predicate that
+  \until{(\existss{x}{\text{will-delete}(x)})}{\text{at-most-m}}))}$, where $\text{exactly-n}$ is a predicate that
   is true when there are exactly $n$ distinct entities of a given sort.
 \end{example}

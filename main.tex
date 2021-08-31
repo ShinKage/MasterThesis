@@ -12,6 +12,7 @@
 \usepackage{braket}
 \usepackage{ebproof}
 \usepackage{tabularx}
+\usepackage[printonlyused,withpage]{acronym}
 
 \usepackage{hyperref}
 \usepackage{cleveref}
@@ -38,17 +39,31 @@
                 refname={example,examples},
                 Refname={Example,Examples}]{example}
 
+\DeclareMathOperator{\suffix}{suffix}
+\DeclareMathOperator{\extend}{ext}
+\DeclareMathOperator{\paths}{paths}
+
 \input{macros}
+
 
 \begin{document}
 
-\chapter{Introduction}
+\chapter*{Abstract}
+First-Order Linear Temporal Logic (FOLTL) is the extension of the well-known propositional Linear Temporal Logic with
+first-order quantification. Classicaly is interpreted over the so-called \emph{Kripke-frames}, however they suffer
+limitations requiring restriction on the accessibility relation between time-points, or worlds. We introduce a novel
+semantic for FOLTL based on \emph{counterpart relations}, i.e. families of partial homomorphisms between algebras. This
+approach overcomes most limitations, completely removing the \emph{trans-world identity problem} and thus streamlining
+the modeling of dynamic creation, deletion and merging of entities. We also provide an accompanying Hilbert-style
+deductive system, and we conclude with consideration about completeness, decidability and possible extensions.
+
+\chapter{Introduction}\label{chap:intro}
 \input{introduction}
 
-\chapter{Linear Temporal Logic}
+\chapter{Linear Temporal Logic}\label{chap:ltl}
 \input{ltl}
 
-\chapter{Counterpart Semantic}
+\chapter{Counterpart Semantic}\label{chap:counterpart}
 In this chapter we will introduce both syntax and semantics of the calculus, however we will use many-sorted algebras as
 models for the evaluation of the formulae.
 \input{algebra}
@@ -56,10 +71,21 @@ models for the evaluation of the formulae.
 \input{syntax}
 \input{semantics}
 
-\chapter{Proof System}
+\chapter{Proof System}\label{chap:system}
 \input{axioms}
 
-\chapter{Future work}
+\chapter{Future work}\label{chap:future}
 \input{extensions}
+
+\chapter*{Acronyms}
+\begin{acronym}
+  \acro{LTL}{Linear Temporal Logic}
+  \acro{FOLTL}{First-Order Linear Temporal Logic}
+  \acro{SOLTL}{Second-Order Linear Temporal Logic}
+  \acro{MSO}{Monadic Second-Order}
+  \acro{FOL}{First-Order Logic}
+  \acro{CTL}{Computation Tree Logic}
+  \acro{PCTL}{Probabilistic Computation Tree Logic}
+\end{acronym}
 
 \end{document}

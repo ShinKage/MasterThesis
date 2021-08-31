@@ -5,20 +5,22 @@
 \newcommand{\algset}[1]{\mathcal{#1}}
 \newcommand{\terms}[2]{T({#1}_{#2})}
 \newcommand{\worldcr}[3]{#1 \overset{#2}{\rightsquigarrow} #3}
-\newcommand{\nextop}[1]{X{#1}}
+\newcommand{\nextop}[1]{\bigcirc{#1}}
 \newcommand{\until}[2]{{#1}\,U {#2}}
-\newcommand{\forever}[1]{G{#1}}
-\newcommand{\eventually}[1]{F{#1}}
+\newcommand{\forever}[1]{\Box{#1}}
+\newcommand{\eventually}[1]{\Diamond{#1}}
 \newcommand{\weak}[2]{{#1}\,W {#2}}
 \newcommand{\existss}[2]{\exists {#1} \ldotp {#2}}
 \newcommand{\foralls}[2]{\forall {#1} \ldotp {#2}}
-\newcommand{\sem}[4]{({#1}, {#2}) \vDash_{#3} {#4}}
-\newcommand{\semn}[4]{({#1}, {#2}) \nvDash_{#3} {#4}}
-\newcommand{\semtwo}[6]{({#1}, {#2}, {#3}) \vDash_{#4}^{#5} {#6}}
-\newcommand{\semntwo}[6]{({#1}, {#2}, {#3}) \nvDash_{#4}^{#5} {#6}}
+\newcommand{\existpath}[1]{E{#1}}
+\newcommand{\forallpath}[1]{A{#1}}
+\newcommand{\sem}[4]{{#1}, {#2} \vDash_{#3} {#4}}
+\newcommand{\semn}[4]{{#1}, {#2} \nvDash_{#3} {#4}}
+\newcommand{\semtwo}[6]{{#1}, {#2}, {#3} \vDash_{#4}^{#5} {#6}}
+\newcommand{\semntwo}[6]{{#1}, {#2}, {#3} \nvDash_{#4}^{#5} {#6}}
 \newcommand{\universe}[1]{\Omega_{#1}}
 \newcommand{\universetwo}[2]{\Omega_{#1}^{#2}}
-\newcommand{\ext}[3]{\text{ext}_{#1}({#2},{#3})}
+\newcommand{\ext}[3]{\extend_{#1}({#2},{#3})}
 
 % FIGURE STUFF
 \makeatletter

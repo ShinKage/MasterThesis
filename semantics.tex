@@ -1,45 +1,51 @@
 \section{Semantics}
 
 \begin{definition}[Semantic of FO-LTL]\label{def:fosemantic}
-Let $M$ be a counterpart model, $\Gamma$ a context and $(\sigma, w)$ a pair substitution-world in the context $\Gamma$.
-The validity of a formula-in-context $\phi$, denoted $\sem{\sigma}{w}{\Gamma}{\phi}$, is defined inductively as follows:
+Let $M$ be a counterpart model, $\Gamma$ a context, $\pi = \worldcr{w_0}{cr_0}{w_1}, \worldcr{w_1}{cr_1}{w_2}, \ldots$
+an infinite sequence of accessible worlds, and $\sigma$ a substitution with context $\Gamma$ and with world $w_0$.
+The validity of a formula-in-context $\phi$, denoted $\sem{\pi}{\sigma}{\Gamma}{\phi}$, is defined inductively as follows:
 \begin{align*}
-  (\sigma, w) &\vDash_\Gamma tt \\
-  (\sigma, w) &\vDash_\Gamma \epsilon_\tau = \eta_\tau &&\text{ iff } \sigma(\epsilon) = \sigma(\eta) \\
-  (\sigma, w) &\vDash_\Gamma \neg\phi &&\text{ iff } \semn{\sigma}{w}{\Gamma}{\phi} \\
-  (\sigma, w) &\vDash_\Gamma \phi_1 \lor \phi_2
-      &&\text{ iff } \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ or } \sem{\sigma}{w}{\Gamma}{\phi_2} \\
-  (\sigma, w) &\vDash_\Gamma \existss{x_\tau}{\phi}
-      &&\text{ iff } \existss{v \in d(w)}{\sem{\text{ext}_x(\sigma, v)}{w}{\Gamma, x}{\phi}}
-      \text{ with } x \not\in \Gamma \\
-  (\sigma, w) &\vDash_\Gamma \nextop{\phi}
-      &&\text{ iff } \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}} \\
-  (\sigma, w) &\vDash_\Gamma \until{\phi_1}{\phi_2}
-      &&\text{ iff } \sem{\sigma}{w}{\Gamma}{\phi_2} \text{ or } (\sem{\sigma}{w}{\Gamma}{\phi_1}
-          \text { and } \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\until{\phi_1}{\phi_2}}}) \\
+  \pi, \sigma &\vDash_\Gamma tt \\
+  \pi, \sigma &\vDash_\Gamma \epsilon_\tau = \eta_\tau &&\text{iff } \sigma(\epsilon) = \sigma(\eta) \\
+  \pi, \sigma &\vDash_\Gamma \neg\phi &&\text{iff } \semn{\pi}{\sigma}{\Gamma}{\phi} \\
+  \pi, \sigma &\vDash_\Gamma \phi_1 \lor \phi_2
+      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_1} \text{ or } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \\
+  \pi, \sigma &\vDash_\Gamma \existss{x_\tau}{\phi}
+      &&\text{iff } \existss{v \in d(w_0)}{\sem{\pi}{\extend_x(\sigma, v)}{\Gamma, x}{\phi}}
+        \text{ with } x \not\in \Gamma \\
+  \pi, \sigma &\vDash_\Gamma \nextop{\phi}
+      &&\text{iff } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\phi} \\
+  \pi, \sigma &\vDash_\Gamma \until{\phi_1}{\phi_2}
+      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \text{ or } (\sem{\pi}{\sigma}{\Gamma}{\phi_1}
+        \text { and } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\until{\phi_1}{\phi_2}})
 \end{align*}
-  Where $\text{ext}_x : (A \rightharpoonup B) \times B \to (A \cup \set{x} \rightharpoonup B)$ is defined as:
+  Where $\extend_x : (A \rightharpoonup B) \times B \to (A \cup \set{x} \rightharpoonup B)$ is defined as:
   \[
-    \text{ext}_x(\sigma, v)(y) = \begin{cases} v & \text{if } y = x \\ \sigma(y) & \text{otherwise}\end{cases}
+    \extend_x(\sigma, v)(y) = \begin{cases} v & \text{if } y = x \\ \sigma(y) & \text{otherwise}\end{cases}
   \]
 \end{definition}
 
-The formula $tt$ holds for any possible pair assignement-world. The predicate $=$ models equality for typed terms, where
+The formula $tt$ holds for any possible sequence and assignment. The predicate $=$ models equality for typed terms, where
 $\epsilon_\tau = \eta_\tau$ is valid if the evaluation is either undefined for both terms or they are equal according to
 the standard notion of equality. The negation of a formula is satisfied if the formula without the negation is not
 valid. The disjunction of two formulae is valid if either of them is valid. Existentially quantified formulae are valid
 if the formula is valid in the context extended with the quantified variable. The sub-formula must be valid in the same
 world and with the assignment extended to the context $\Gamma, x$ with a new value within the domain of the algebra,
 thus behaving identically on all the variables in the original context $\Gamma$. Next we look at temporal operators.
-Formulae containing the next operator are valid if the sub-formula is valid in all the world accessible from $w$. The
-sub-formula is evaluated with the assignement composed with the counterpart relation between the accessible worlds.
+Formulae containing the next operator are valid if the sub-formula is valid in the next accessible world in the sequence.
+The sub-formula is evaluated with the assignement composed with the counterpart relation between the accessible worlds.
 Formulae with the until operator, instead, are satisfied either if the post-condition is valid in the current world or 
-if the pre-condition is valid and the whole formula is valid in all the accessible world, the same as for the next
-operator.
+if the pre-condition is valid and the whole formula is valid in the next accessible world in the sequence, the same as
+for the next operator. An alternative, but equivalent formulation for the semantics of the until operator is the following:
+\begin{align*}
+  \pi, \sigma \vDash_\Gamma \until{\phi_1}{\phi_2}
+      &\text{ iff } \existss{j \geq 0}{\sem{\suffix(\pi,j)}{cr_{j-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi_2}} \\
+      &\text{ and } \foralls{0 \leq i < j}{\sem{\suffix(\pi,i)}{cr_{i-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi_1}}
+\end{align*}
 
 \begin{definition}
   A formula $\phi \in \mathcal{F}_\Sigma$ is called \emph{valid for the counterpart model $M$}, denoted by $\vDash_M
-  \phi$, if $\sem{\sigma}{w}{\Gamma}{\phi}$ for every context $\Gamma$, world $w$ and substitution $\sigma$.
+  \phi$, if $\sem{\pi}{\sigma}{\Gamma}{\phi}$ for every context $\Gamma$, infinite sequence $\pi = \worldcr{w_0}{cr_0}{w_1},\worldcr{w_1}{cr_1}{w_2},\ldots$ and substitution $\sigma$ for the world $w_0$.
 \end{definition}
 \begin{definition}
   A formula $\phi \in \mathcal{F}_\Sigma$ is called a \emph{consequence} of a set $F \subseteq \mathcal{F}_\Sigma$,
@@ -52,46 +58,38 @@ operator.
 Let's explore the semantics of the other common operators defined in the previous chapters.
 
 \begin{align}
-  \sem{\sigma}{w}{\Gamma}{\phi_1 \land \phi_2}
-    &\Leftrightarrow \semn{\sigma}{w}{\Gamma}{\neg\phi_1 \lor \neg\phi_2} \notag \\
-    &\Leftrightarrow \semn{\sigma}{w}{\Gamma}{\neg\phi_1} \text{ and } \semn{\sigma}{w}{\Gamma}{\neg\phi_2} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ and } \sem{\sigma}{w}{\Gamma}{\phi_2} \label{eq:andsem} \\[1ex]
-  \sem{\sigma}{w}{\Gamma}{\phi_1 \to \phi_2}
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\neg\phi_1 \lor \phi_2} \notag \\
-    &\Leftrightarrow \semn{\sigma}{w}{\Gamma}{\neg\phi_1} \text{ or } \sem{\sigma}{w}{\Gamma}{\phi_2} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ implies } \sem{\sigma}{w}{\Gamma}{\phi_2} \label{eq:impliessem} \\[1ex]
-  \sem{\sigma}{w}{\Gamma}{\phi_1 \leftrightarrow \phi_2}
-    &\Leftrightarrow (\sem{\sigma}{w}{\Gamma}{\phi_1 \to \phi_2}) \text{ and } (\sem{\sigma}{w}{\Gamma}{\phi_2 \to \phi_1}) \notag \\
-    &\Leftrightarrow (\sem{\sigma}{w}{\Gamma}{\phi_1} \text{ implies } \sem{\sigma}{w}{\Gamma}{\phi_2}) \notag \\
-        &\qquad\quad\text{and } (\sem{\sigma}{w}{\Gamma}{\phi_2} \text{ implies } \sem{\sigma}{w}{\Gamma}{\phi_1}) \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi_1} \text{ iff } \sem{\sigma}{w}{\Gamma}{\phi_2} \label{eq:iffsem} \\[1ex]
-  \sem{\sigma}{w}{\Gamma}{\foralls{x}{\phi}}
-    &\Leftrightarrow \semn{\sigma}{w}{\Gamma}{\existss{x}{\neg\phi}} \notag \\
-    &\Leftrightarrow \nexists v \in d(w) \ldotp \semn{\sigma[v/x]}{w}{\Gamma}{\phi} \notag \\
-    &\Leftrightarrow \foralls{v \in d(w)}{\sem{\sigma[v/x]}{w}{\Gamma}{\phi}} \label{eq:forallsem} \\[1ex]
-  \sem{\sigma}{w}{\Gamma}{\eventually{\phi}}
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\until{tt}{\phi}} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi} \text{ or }
-        (\sem{\sigma}{w}{\Gamma}{tt} \text { and } \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\until{tt}{\phi}}}) \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi} \text{ or }
-        \foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\until{tt}{\phi}}} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi} \text{ or } \sem{\sigma}{w}{\Gamma}{\nextop{\eventually{\phi}}} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\phi} \lor \nextop{\eventually{\phi}} \label{eq:eventuallysem} \\[1ex]
-  \sem{\sigma}{w}{\Gamma}{\forever{\phi}}
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\neg\eventually{\neg\phi}} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\sem{\sigma}{w}{\Gamma}{\phi} \text{ and }
-        \neg\foralls{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\neg\phi}}} \notag \\
-    &\Leftrightarrow \sem{\sigma}{w}{\Gamma}{\sem{\sigma}{w}{\Gamma}{\phi} \text{ and }
-        \existss{\worldcr{w}{cr}{w'}}{\sem{cr \circ \sigma}{w'}{\Gamma}{\phi}}} \notag \\
-    &\Leftarrow \sem{\sigma}{w}{\Gamma}{\phi \land \nextop{\forever{\phi}}} \label{eq:foreversem}
+  \sem{\pi}{\sigma}{\Gamma}{\phi_1 \land \phi_2}
+    &\Leftrightarrow \semn{\pi}{\sigma}{\Gamma}{\neg\phi_1 \lor \neg\phi_2} \notag \\
+    &\Leftrightarrow \semn{\pi}{\sigma}{\Gamma}{\neg\phi_1} \text{ and } \semn{\pi}{\sigma}{\Gamma}{\neg\phi_2} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi_1} \text{ and } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \label{eq:andsem} \\[1ex]
+  \sem{\pi}{\sigma}{\Gamma}{\phi_1 \to \phi_2}
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\neg\phi_1 \lor \phi_2} \notag \\
+    &\Leftrightarrow \semn{\pi}{\sigma}{\Gamma}{\neg\phi_1} \text{ or } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi_1} \text{ implies } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \label{eq:impliessem} \\[1ex]
+  \sem{\pi}{\sigma}{\Gamma}{\phi_1 \leftrightarrow \phi_2}
+    &\Leftrightarrow (\sem{\pi}{\sigma}{\Gamma}{\phi_1 \to \phi_2}) \text{ and } (\sem{\pi}{\sigma}{\Gamma}{\phi_2 \to \phi_1}) \notag \\
+    &\Leftrightarrow (\sem{\pi}{\sigma}{\Gamma}{\phi_1} \text{ implies } \sem{\pi}{\sigma}{\Gamma}{\phi_2}) \notag \\
+        &\qquad\quad\text{and } (\sem{\pi}{\sigma}{\Gamma}{\phi_2} \text{ implies } \sem{\pi}{\sigma}{\Gamma}{\phi_1}) \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi_1} \text{ iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \label{eq:iffsem} \\[1ex]
+  \sem{\pi}{\sigma}{\Gamma}{\foralls{x}{\phi}}
+    &\Leftrightarrow \semn{\pi}{\sigma}{\Gamma}{\existss{x}{\neg\phi}} \notag \\
+    &\Leftrightarrow \nexists v \in d(w_0) \ldotp \semn{\pi}{\extend_x(\sigma, v)}{\Gamma}{\phi} \notag \\
+    &\Leftrightarrow \foralls{v \in d(w_0)}{\sem{\pi}{\extend_x(\sigma, v)}{\Gamma}{\phi}} \label{eq:forallsem} \\[1ex]
+  \sem{\pi}{\sigma}{\Gamma}{\eventually{\phi}}
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\until{tt}{\phi}} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi} \text{ or }
+        (\sem{\pi}{\sigma}{\Gamma}{tt} \text { and } \sem{\suffix(\pi,1)}{cr_0 \circ \sigma}{\Gamma}{\until{tt}{\phi}}) \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi} \text{ or }
+        \sem{\suffix(\pi,1)}{cr_0 \circ \sigma}{\Gamma}{\until{tt}{\phi}} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi} \lor \nextop{\eventually{\phi}} \label{eq:eventuallyexp} \\
+    &\Leftrightarrow \existss{j \geq 0}{\sem{\suffix(\pi,j)}{cr_{j-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi}} \label{eq:eventuallysem} \\[1ex]
+  \sem{\pi}{\sigma}{\Gamma}{\forever{\phi}}
+    &\Leftrightarrow \semn{\pi}{\sigma}{\Gamma}{\eventually{\neg\phi}} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi} \text{ and }
+        \semn{\suffix(\pi,i)}{cr_0 \circ \sigma}{\Gamma}{\eventually{\neg\phi}} \notag \\
+    &\Leftrightarrow \sem{\pi}{\sigma}{\Gamma}{\phi \land \nextop{\forever{\phi}}} \label{eq:foreverexp} \\
+    &\Leftrightarrow \foralls{j \geq 0}{\sem{\suffix(\pi,j)}{cr_{j-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi}} \label{eq:foreversem}
 \end{align}
-
-The semantics of the derived operator matches our intuition, however the expansion rule for the forever operator is not
-bidirectional, as for an arbitrary pair $(\sigma, w)$ there could be multiple accessible world from $w$ and only some of
-them satisfy the body of the quantifier. Nonetheless, this is issue is marginal for two reason. First, if
-$\forever{\phi}$ is valid within the model $M$ then the implication becomes bidirectional. Second, typically the
-accessibility relation in the models are linear order, in particular traces of a transition system, which once again
-solves the issue.
 
 \section{Example of execution}
 
@@ -122,43 +120,38 @@ solves the issue.
     \draw[->] (33cm,-4cm) -- ++(0,-2cm);
     \draw[->] (9cm,-14cm) -- ++(0,-2cm);
     \draw[->] (28cm,-14cm) -- ++(-2cm,-2cm);
+    % FIXME: draw self-loop for w_4
   \end{tikzpicture}
   \end{center}
   \caption{Example of counterpart model for a memory layout signature.}
   \label{fig:exmemsignature}
 \end{figure}
 
-Here we will provide the evaluation of some formulae, using some of the predicates introduced earlier in the chapter.
-Assume we are evaluating according to the counterpart model visually represented by~\Cref{fig:exmemsignature}, with
-the signature being the idealised memory model in~\Cref{sec:algebra} and the counterpart relations acting as the
-identity on the objects sort, and on memory location sort as visually represented.
-Let's evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x)
-\neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step
-of computation. Because this formula has no free variables it will be evaluated in the empty context, thus the only
-admissible substitution is the empty substitution, which we will denote with $\bot$.
-First, by virtue of the definition of the existential quantifier, we need to evaluate the conjunction in the empty
-context extended by the two quantified variables, $\sem{\sigma}{w}{x,l}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}$.
-The left-hand side of the conjunction is valid in all worlds when both variables are evaluated to be undefined or if
-both are defined and the location is exactly the one represented visually in the figure, e.g. in world $w_0$, with
-the assignement $\sigma$ such that $\sigma(x) = A$, $\sigma(l) = 0$ it follows that $\sem{\sigma}{w}{x,l}{\rho(x) = l}$.
-For the right-hand side we need to check the accessibility relation of the model. The pairs for which the formula
-$\rho(x) \neq l$ is valid are exactly the complement of the left-hand side, therefore we need to check which pair evolve
-due to the counterpart relations into one of those, for each possible accessible world. All the assignements where only
-one of the two variables are undefined, evolve via the counterpart relations into one in this set, however they are not
-interesting as they cannot satisfy the conjuction. There are also pair for which the sub-formula inside the next
-operator is valid in one trasition but not all of them, an example is $(\sigma, w_2)$ with $\sigma$ such that $\sigma(x) = C$,
-$\sigma(l) = 2$. After applying the counterpart relation $\worldcr{w_2}{cr}{w_3}$, $(cr \circ \sigma)(l) = 3$ that
-satisfies the inequality $\rho(C) \neq 3$, however with the counterpart relation $\worldcr{w_2}{cr}{w_4}$,
-$(cr \circ sigma)(l) = 2$ does not satisfy the inequality, thus $\semn{\sigma}{w_2}{x,l}{\nextop{(\rho(x) \neq l)}}$.
-An example of pair that, instead, makes the whole conjuction valid is $(\sigma, w_3)$ with $\sigma$ such that $\sigma(x)
-= E$,$\sigma(l) = 2$. Readers may notice that there is still the assignement always undefined for which equalities are
-always trivially sastisfied, however, the existential quantifier requires that assignments are extended with defined
-values, thus ultimately matching our intuition for the semantic of the formula. As noted before, the final pairs must be
-composed of empty substitution, therefore the only pairs for which the formula $\phi_1$ is valid are $(\bot, w_1)$ and
-$(\bot, w_3)$.
+Here we will provide an example of semantic evaluation of a formula, using some of the predicates introduced earlier in the chapter.  Assume we are evaluating according to the counterpart model visually represented by~\Cref{fig:exmemsignature}, with the signature being the idealised memory model in~\Cref{sec:algebra} and the counterpart relations acting as the identity on the objects sort, and on memory location sort as visually represented. 
+
+Let's evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step of computation.
+Because this formula has no free variables it will be evaluated in the empty context, thus the only admissible substitution is the empty substitution, which we will denote with $\bot$.
+
+First, by virtue of the definition of the existential quantifier, we need to evaluate the conjunction in the empty context extended by the two quantified variables, $\sem{\pi}{\sigma}{x,l}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}$.
+The left-hand side of the conjunction is valid in all worlds when both variables are evaluated to be undefined or if both are defined and the location is exactly the one represented visually in the figure, e.g. in world $w_0$, with the assignement $\sigma$ such that $\sigma(x) = A$, $\sigma(l) = 0$ it follows that $\sem{\pi}{\sigma}{x,l}{\rho(x) = l}$, with $w_0$ the starting world of the sequence $\pi$.
+For the right-hand side we need to check the accessibility relation of the model. The pairs for which the formula $\rho(x) \neq l$ is valid are exactly the complement of the left-hand side, therefore we need to check sequences $\pi$ that evolve into a world in the complement in one step.
+All the assignements where only one of the two variables are undefined, evolve via the counterpart relations into one in the complement, however they are not interesting as they cannot satisfy the conjuction.
+An example of pair that, instead, makes the whole conjuction valid is $\pi, \sigma$ with $\pi$ starting with the world
+$w_3$ and $\sigma$ such that $\sigma(x) = E$,$\sigma(l) = 2$ or $\pi$ starting with the world $w_2$ and $\sigma$ such
+that $\sigma(x) = C$,$\sigma(l) = 2$.
+Readers may notice that there is still the assignement always undefined for which equalities are always trivially sastisfied, however, the existential quantifier requires that assignments are extended with defined values, thus ultimately matching our intuition for the semantic of the formula.
+Thus to hold we must evaluate the formula in a sequence starting with either $w_1$, $w_2$ or $w_3$, however while for
+$w_1$ and $w_3$ there is only a single valid sequence, respectively (with some notation abuse since the relation is
+unique between each pair of worlds) $\pi1 = w_1w_3w_4w_4\ldots$ and $\pi2 = w_3w_4w_4\ldots$, for the world $w_2$ there
+are two possible paths $\pi3 = w_2w_3w_4w_4\ldots$ and $\pi4 = w_2w_4w_4\ldots$ where only the former satisfies the
+formula. Thus $\sem{\pi}{\sigma}{\emptyset}{\phi_1}$ with $\pi \in \set{\pi1, \pi2, \pi3}$ and $\sigma = \bot$.
 
 If we wanted to recover the information about the specific object and/or location that moved with time, we need to evaluate open
 formulae, thus we need to remove one or both existential quantification. However, since there is no quantification that
 avoids undefined values that trivially satisfy equalities, we need a presence predicate, i.e. $\text{presence}(x_\tau) =
 \existss{y_\tau}{x = y}$, which is satisfiable only if $y$ is equal to $x$ and $y$ must be defined, therefore
 also $x$ must be defined.
+
+Note that the formula is not valid in the model described by the figure since there are sequence which does not satisfy
+the formula. A formula that instead is valid is $\phi_2 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\forever{\rho(x)
+= l}}}$, that is always satisfied since the object $A$ exists in every model and it never changes position.

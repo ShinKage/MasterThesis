@@ -2,7 +2,7 @@ In the following sections we will shortly summarise both syntax and semantics of
 propositional form and show the issue of directly translating it to the quantified first-order version.
 Since many combinations of both unary and binary operators have been studied as forms of linear temporal logic, we will
 investigate only the somewhat common case of a logic with a singular primitive unary operation, \emph{next}, and a
-singularo primitive binary operation, \emph{until}. Nonetheless, both the classical approach and the one presented in
+singular primitive binary operation, \emph{until}. Nonetheless, both the classical approach and the one presented in
 this work can be trivially extended with other operators known in the literature, like \emph{unless}.
 
 \section{Syntax}
@@ -104,20 +104,23 @@ time, thus a temporal model is defined as:
   returns the subset of all atomic propositions which are valid at that point.
 \end{definition}
 
-Additionally, the pair $(T, \prec)$ is called a temporal frame.
+Additionally, the pair $(T, \prec)$ is called a temporal frame. The truthness of a formula is evaluated over a single
+trace of the model, i.e. an infinite ascending chain of the accessibility relation over $T$,
+$\pi = t_0t_1t_2\ldots$ with $t_i \prec t_{i+1}$ for every $i \geq 0$.
 
 \begin{definition}[LTL semantic]
-  The truthness of a LTL formula $\phi$ at the time-point $t$ over the temporal model $M$, denoted as
-  $M, t \vDash \phi$ is defined inductively as follows:
+  The truthness of a LTL formula $\phi$ with the chain $\pi$ over the temporal model $M$, denoted as
+  $M, \pi \vDash \phi$ is defined inductively as follows:
   \begin{align*}
-    M, t &\vDash tt && \\
-    M, t &\vDash p &&\text{ iff } p \in L(t) \\
-    M, t &\vDash \neg\phi &&\text{ iff } M, t \nvDash \phi \\
-    M, t &\vDash \phi_1 \lor \phi_2 &&\text{ iff } M, t \vDash \phi_1 \text{ or } M, t \vDash \phi_2 \\
-    M, t &\vDash \nextop{\phi} &&\text{ iff } \foralls{t \prec t'}{M, t' \vDash \phi} \\
-    M, t &\vDash \until{\phi_1}{\phi_2} &&\text{ iff } M, t \vDash \phi_2 \text{ or } (M, t \vDash \phi_1 \text{ and }
-      \foralls{t \prec t'}{M, t' \vDash \until{\phi_1}{\phi_2}})
+    \pi &\vDash tt && \\
+    \pi &\vDash p &&\text{iff } p \in L(\pi_0) \\
+    \pi &\vDash \neg\phi &&\text{iff } \pi \nvDash \phi \\
+    \pi &\vDash \phi_1 \lor \phi_2 &&\text{iff } \pi \vDash \phi_1 \text{ or } \pi \vDash \phi_2 \\
+    \pi &\vDash \nextop{\phi} &&\text{iff } \suffix(\pi, 1) \vDash \phi \\
+    \pi &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j) \vDash \phi_2 \land
+      (\foralls{0 \leq i < j}{\suffix(\pi, i) \vDash \phi_1})}
   \end{align*}
+  Where $\suffix(\pi, n)$ removes the first $n$ elements of the chain $\pi$.
 \end{definition}
 
 \section{First-Order Extension}
@@ -181,18 +184,18 @@ $I(x, t) = \sigma(x)$ where $x \in X$ and $\sigma$ is a suitable assignment that
 $I^\sigma$.
 
 \begin{definition}[FO-LTL semantic]
-  The truthness of a FO-LTL formula $\phi$ at the point in time $t$ over the Kripke model $M$ and the induced
-  interpretation $I^\sigma$, denoted as $M, t, I^\sigma \vDash \phi$ is defined inductively as follows:
+  The truthness of a FO-LTL formula $\phi$ with the chain $\pi$ over the Kripke model $M$ and the induced
+  interpretation $I^\sigma$, denoted as $\pi, I^\sigma \vDash \phi$ is defined inductively as follows:
   \begin{align*}
-    M, t, I^\sigma &\vDash tt && \\
-    M, t, I^\sigma &\vDash P(x_1, \ldots, x_n) &&\text{iff } (\sigma(x_1), \ldots, \sigma(x_2)) \in I^\sigma(P, t) \\
-    M, t, I^\sigma &\vDash \neg\phi &&\text{iff } M, t, I^\sigma \nvDash \phi \\
-    M, t, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{iff } M, t, I^\sigma \vDash \phi_1 \text{ or } M, t, I^\sigma
+    \pi, I^\sigma &\vDash tt && \\
+    \pi, I^\sigma &\vDash P(x_1, \ldots, x_n) &&\text{iff } (\sigma(x_1), \ldots, \sigma(x_2)) \in I^\sigma(P, \pi_0) \\
+    \pi, I^\sigma &\vDash \neg\phi &&\text{iff } \pi, I^\sigma \nvDash \phi \\
+    \pi, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{iff } \pi, I^\sigma \vDash \phi_1 \text{ or } \pi, I^\sigma
       \vDash \phi_2 \\
-    M, t, I^\sigma &\vDash \nextop{\phi} &&\text{iff } \foralls{t \prec t'}{M, t', I^\sigma \vDash \phi} \\
-    M, t, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } M, t, I^\sigma \vDash \phi_2 \text{ or }
-      (M, t, I^\sigma \vDash \phi_1 \text{ and } M, t', I^\sigma \vDash \until{\phi_1}{\phi_2}) \\
-    M, t, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(t)}{M, t, I^{\sigma[v/x]} \vDash \phi} \\
+    \pi, I^\sigma &\vDash \nextop{\phi} &&\text{iff } \suffix(\pi, 1), I^\sigma \vDash \phi \\
+    \pi, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j), I^\sigma \vDash \phi_2 \land
+      (\foralls{0 \leq i < j}{\suffix(\pi, i), I^\sigma \vDash \phi_1})} \\
+    \pi, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(\pi_0)}{\pi, I^{\sigma[v/x]} \vDash \phi} \\
   \end{align*}
 \end{definition}
 

@@ -1,27 +1,35 @@
-Modal and temporal logics have seen widespread usage in the industry as languages for expressing property about the
-evolution of complex systems. Various models based on graphs and automaton have model checkers developed upon.
-Most of them are based upon propositional variation of modal and temporal logics, however some reasearcher started
-working on first-order or second-order variants. These logics suffer mainly two issues: they are in general undecidable
-and the semantics evaluation model suffer various issue with trans-world identity.
-Counterpart relations solve most of these issues and recent works successfully use counterpart relations with monadic
-second-order modal logics to obtain a decidable calculus in finite domains and a companion model checker prototype.
-However they are based upon fixpoints and modal operators which are not really intuitive. The semantics evaluation
-function is complex and hard to follow by hand, and work is still needed regarding completeness and inference systems.
-The aim of this work is to develop a a counterpart semantics model for first-order/second-order linear temporal logic,
-and show that we can obtain a far simpler and understandable semantics but being still able to model plenty of
-properties and with an axiomatic model and an inference system.
+Modal and temporal logics have seen widespread usage in the industry as languages for expressing properties about the
+evolution of complex systems, ranging from single programs to distributed multi-agent systems. Researchers developed
+various tool with visual formalisms, with the objective of modeling the topology and the behaviour of complex systems
+through objects like graphs and automata, thus it arises the need of temporal logics capable of reasoning about the
+evolution of such systems.
 
-We will first give an introduction to linear temporal logic and the issue of extending it to the first or
-second-order. Then we will present the mathematical tools used in our semantics, many-sorted algebras and counterpart
-models. We will defined the counterpart semantics for first-order/second-order linear temporal logic with many examples
-of properties and how to compute the semantics. Finally we will show some results on axioms and inference rules.
+Research efforts have been mainly devoted to propositional flavors of temporal logic with surveys and monographies.
+Investigations on quantified version of temporal logics are few and mainly focused on finding fragments of such logics,
+due to negative results about completeness and decidability, thus favoring efficiency and more importantly computability
+in liue of expressivity. Nonetheless there are relevant works that provide not only axiomatic systems or decidability
+results with some restriction, but also model checker and prototypes both on first-order and second-order temporal
+logics.
 
-The main running example will be about multi-process communication over channels, modeled via graphs with processes as
-nodes and channels as edges. Some of the properties we will be able to express with our calculus are:
-\begin{itemize}
-  \item Will all the channel be closed at the end of the execution?
-  \item Which channels will be merged during execution?
-  \item Are there isolated process at any point in time?
-  \item Do the channels connection change at each step?
-  \item Are new channels created during the execution?
-\end{itemize}
+They still suffer, though, from problem related to the identification of objects across worlds that are not only
+relevant from a philosophical perspective, but also from a more pragmatic computer science perspective, since we are
+interested in modeling properties with allocations, deallocations and merging of entities. Thus, the so-called
+Kripke-semantics make use of universal domains and restrictive rules to tackle at least partially the issue with the
+\emph{trans-world identity problem}. However, even with such modification, Kripke-semantics are still not well suited
+for modeling identity between entities and programming concepts such as dynamic allocation and deallocation of objects.
+
+We introduce a novel semantic for quantified \ac{LTL} in the tradition of counterpart relations, which explicitly relate
+elements of different worlds, which are in principle unique to such worlds. Various results have been published on
+models and axiomatic systems with counterpart relation and modal logic, however we wanted to prove the goodness of such
+models with the simpler and more intuitive language of linear logic, by providing an equally simple semantic that could
+be easily followed by hand without the noise introduced by fixpoint operators in the semantic of modal languages such as
+the $\mu$-calculus.
+
+In~\Cref{chap:ltl} we will provide a brief introduction to \ac{LTL} and \ac{FOLTL} syntax and interpretation with a
+Kripke-style semantic. In~\Cref{chap:counterpart} we will introduce the multi-sorted model that we will use to
+evaluate the truthness of \ac{FOLTL} formulae with our novel approach based on counterpart relations, then we
+introduce the adapted syntax and semantic, with illustrative examples, models and evaluations. Finally
+in~\Cref{chap:system}, we introduce an Hilbert-style deductive system with comparison to other systems provided in the
+literature, we show the correctness of such system and discuss completeness and decidability. We conclude
+in~\Cref{chap:future} with some remarks about improvements and further questions about the model presented in this
+work, and possible extensions.
