@@ -16,6 +16,10 @@
 
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage[autostyle]{csquotes}
+\usepackage[backend=biber]{biblatex}
+
+\addbibresource{bibliography.bib}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows, cd, positioning}
@@ -45,17 +49,21 @@
 
 \input{macros}
 
+% TITLE: Counterpart semantic for First-Order Linear Temporal Logic
 
 \begin{document}
 
 \chapter*{Abstract}
+
 First-Order Linear Temporal Logic (FOLTL) is the extension of the well-known propositional Linear Temporal Logic with
-first-order quantification. Classicaly is interpreted over the so-called \emph{Kripke-frames}, however they suffer
-limitations requiring restriction on the accessibility relation between time-points, or worlds. We introduce a novel
-semantic for FOLTL based on \emph{counterpart relations}, i.e. families of partial homomorphisms between algebras. This
-approach overcomes most limitations, completely removing the \emph{trans-world identity problem} and thus streamlining
-the modeling of dynamic creation, deletion and merging of entities. We also provide an accompanying Hilbert-style
-deductive system, and we conclude with consideration about completeness, decidability and possible extensions.
+first-order quantification. Its interpretation is classically over \emph{Kripke-frames}, that is, a set of time-points
+or worlds and an accessibility relation, the properties of which determine the axioms of the logic.  However, such
+interpretation suffers limitations, since it requires restrictions on the accessibility relation between worlds. We
+introduce a novel semantic for FOLTL based on \emph{counterpart relations}, i.e. families of partial homomorphisms
+between algebras. This approach overcomes most limitations, completely removing the \emph{trans-world identity problem}
+and thus streamlining the modeling of dynamic creation, deletion and merging of entities. We also provide the logic with
+a Hilbert-style deductive system, and we conclude with consideration about completeness, decidability and possible
+extensions.
 
 \chapter{Introduction}\label{chap:intro}
 \input{introduction}
@@ -87,5 +95,7 @@ models for the evaluation of the formulae.
   \acro{CTL}{Computation Tree Logic}
   \acro{PCTL}{Probabilistic Computation Tree Logic}
 \end{acronym}
+
+\printbibliography
 
 \end{document}

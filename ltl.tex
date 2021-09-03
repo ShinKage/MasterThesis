@@ -1,9 +1,10 @@
 In the following sections we will shortly summarise both syntax and semantics of linear temporal logic in the
-propositional form and show the issue of directly translating it to the quantified first-order version.
-Since many combinations of both unary and binary operators have been studied as forms of linear temporal logic, we will
-investigate only the somewhat common case of a logic with a singular primitive unary operation, \emph{next}, and a
-singular primitive binary operation, \emph{until}. Nonetheless, both the classical approach and the one presented in
-this work can be trivially extended with other operators known in the literature, like \emph{unless}.
+propositional form and show the issue of directly translating it to the quantified first-order version. Since many
+combinations of both unary and binary operators have been studied as forms of linear temporal
+logic~\cite{pnueli_temporal_1977,gabbay_temporal_1994}, we will investigate only the somewhat common case of a logic
+with a singular primitive unary operation, \emph{next}, and a singular primitive binary operation, \emph{until}.
+Nonetheless, both the classical approach and the one presented in this work can be trivially extended with other
+operators known in the literature~\cite{kroger_temporal_2008}, like \emph{unless}.
 
 \section{Syntax}
 
@@ -82,21 +83,21 @@ $\forever{\phi}$ means that the formula $\phi$ holds at each possible next step.
 \end{figure}
 
 LTL formulae can encode safety properties, commonly with the form $G\neg\phi$, and liveness properties of systems,
-commonly with the form $GF\phi$ or $G(\phi_1 \to F\phi_2)$. Let's assume that we have two concurrent processes and that
-we can encode with two atomic propositions, $\text{crit}_1$ and $\text{crit}_2$, when the two processes can access a
-critical section, then the property of mutual exclusivity can be model by the formula $G(\neg\text{crit}_1 \lor
-\neg\text{crit}_2)$. If we also have atomic propositions for wait conditions, $\text{wait}_1$, then we can model
-liveness conditions, for example $G(\text{wait}_1 \to F\text{crit}_1)$ which means that whenever a process reaches a
-wait condition, eventually will enter the critical section; we can also model fairness conditions, for example
-$GF\text{wait}_1 \to GF\text{crit}_1$ means that if the process infinitely often reaches a wait condition than
+commonly with the form $GF\phi$ or $G(\phi_1 \to F\phi_2)$~\cite{baier_principles_2008}. Let's assume that we have two
+concurrent processes and that we can encode with two atomic propositions, $\text{crit}_1$ and $\text{crit}_2$, when the
+two processes can access a critical section, then the property of mutual exclusivity can be model by the formula
+$G(\neg\text{crit}_1 \lor \neg\text{crit}_2)$. If we also have atomic propositions for wait conditions, $\text{wait}_1$,
+then we can model liveness conditions, for example $G(\text{wait}_1 \to F\text{crit}_1)$ which means that whenever a
+process reaches a wait condition, eventually will enter the critical section; we can also model fairness conditions, for
+example $GF\text{wait}_1 \to GF\text{crit}_1$ means that if the process infinitely often reaches a wait condition than
 infinitely often will reach the critical section.
 
 \section{Semantic}
 
-The de-facto standard semantics for Linear Temporal Logic and Temporal Logics in general are Kripke-style semantics, as
-for modal logics. In modal logic, the so-called Kripke-frames are pairs of set of worlds and an accessibility relation
-between worlds. For temporal logic, each world is a point in time and the accessibility relation models the flow of
-time, thus a temporal model is defined as:
+The de-facto standard semantics for Linear Temporal Logic and Temporal Logics in general are Kripke-style
+semantics~\cite{gasquet_kripkes_2011}, as for modal logics. In modal logic, the so-called Kripke-frames are pairs of set
+of worlds and an accessibility relation between worlds. For temporal logic, each world is a point in time and the
+accessibility relation models the flow of time, thus a temporal model is defined as:
 
 \begin{definition}[Temporal model]
   A \emph{temporal model} $M$ is a triple $(T, \prec, L)$ where $T$ is a set of time-points, $\prec$ is an accessibility
@@ -131,9 +132,9 @@ working with time-dependent components, predicate symbols and variables can be i
 point in time. Symbols that are established to be time-dependent are called \emph{flexible}, conversely time-independent
 symbols are called \emph{rigid}.
 
-Nonetheless both classical logic and linear temporal logic have in common the trait of becoming indecidable when passing
-from propositional calculi to first-order calculi. Furthermore First-Order Linear Temporal Logic is proven to be also
-incomplete.
+Nonetheless both classical logic~\cite{turing_computable_1937} and linear temporal logic~\cite{merz_decidability_1992}
+have in common the trait of becoming indecidable when passing from propositional calculi to first-order calculi.
+Furthermore First-Order Linear Temporal Logic is proven to be also incomplete.
 
 In the following paragraphs we will show a general syntax and semantics of First-Order Linear Temporal Logic, what are
 the condition for completeness and some of the issue with the most common semantic.
@@ -204,11 +205,11 @@ $I^\sigma$.
 Kripke-frames requires that the so-called outer domains $D(t)$ are always increasing with time, i.e. if $t \prec t'$
 then $D(t) \subseteq D(t')$. This condition is required to evaluate temporal operators, otherwise it would not be
 possible to denote a variable $x$ in the future. Other works fix a universal domain equal for each point in time, thus
-$D(t) = D(t')$ for each $t, t' \in T$, which also follows from accessibility relations that contain loops.
-However, by imposing such condition we are identifying object \emph{a priori}
-and universally, irrespective of time. This problem is called \emph{trans-world identity} and extensive literature about
-it has been produced in the last half-century, be either philosophycal questions or possible pratical solutions with
-Kripke-style semantics.
+$D(t) = D(t')$ for each $t, t' \in T$, which also follows from accessibility relations that contain loops.  However, by
+imposing such condition we are identifying object \emph{a priori} and universally, irrespective of time. This problem is
+called \emph{trans-world identity}~\cite{lewis_counterpart_1968,lewis_plurality_2001} and extensive
+literature~\cite{belardinelli_quantified_2021,plantinga_transworld_1978,kripke_naming_1998} about it has been produced
+in the last half-century, be either philosophycal questions or possible pratical solutions with Kripke-style semantics.
 
 Even with the additional constraints on object domains, there are still other issues with Kripke-style semantics and the
 system we are trying to model. Assume we are trying to model resource allocation in a complex system. Let $i$ be a

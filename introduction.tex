@@ -1,35 +1,37 @@
 Modal and temporal logics have seen widespread usage in the industry as languages for expressing properties about the
 evolution of complex systems, ranging from single programs to distributed multi-agent systems. Researchers developed
 various tool with visual formalisms, with the objective of modeling the topology and the behaviour of complex systems
-through objects like graphs and automata, thus it arises the need of temporal logics capable of reasoning about the
-evolution of such systems.
+through objects like graphs~\cite{fiadeiro_temporal_2007} and automata~\cite{montanari_structured_2005}, thus it arises
+the need of temporal logics capable of reasoning about the evolution of such systems.
 
-Research efforts have been mainly devoted to propositional flavors of temporal logic with surveys and monographies.
-Investigations on quantified version of temporal logics are few and mainly focused on finding fragments of such logics,
-due to negative results about completeness and decidability, thus favoring efficiency and more importantly computability
-in liue of expressivity. Nonetheless there are relevant works that provide not only axiomatic systems or decidability
-results with some restriction, but also model checker and prototypes both on first-order and second-order temporal
-logics.
+Research efforts have been mainly devoted to propositional flavors of temporal logic with surveys and
+monographies~\cite{pnueli_temporal_1977,kroger_temporal_2008}. Investigations on quantified version of temporal logics
+are few and mainly focused on finding fragments of such logics, due to negative results about completeness and
+decidability, thus favoring efficiency and more importantly computability in liue of expressivity. Nonetheless there are
+relevant works that provide not only axiomatic systems or decidability results with some restriction, but also model
+checker and prototypes both on first-order and second-order temporal
+logics~\cite{boneva_graph_2007,hutchison_model_2006,baeza-yates_model_2002}.
 
 They still suffer, though, from problem related to the identification of objects across worlds that are not only
 relevant from a philosophical perspective, but also from a more pragmatic computer science perspective, since we are
 interested in modeling properties with allocations, deallocations and merging of entities. Thus, the so-called
 Kripke-semantics make use of universal domains and restrictive rules to tackle at least partially the issue with the
-\emph{trans-world identity problem}. However, even with such modification, Kripke-semantics are still not well suited
-for modeling identity between entities and programming concepts such as dynamic allocation and deallocation of objects.
+\emph{trans-world identity problem}~\cite{lewis_plurality_2001}. However, even with such modification, Kripke-semantics
+are still not well suited for modeling identity between entities and programming concepts such as dynamic allocation and
+deallocation of objects.
 
 We introduce a novel semantic for quantified \ac{LTL} in the tradition of counterpart relations, which explicitly relate
 elements of different worlds, which are in principle unique to such worlds. Various results have been published on
-models and axiomatic systems with counterpart relation and modal logic, however we wanted to prove the goodness of such
+models and axiomatic systems with counterpart relation and modal
+logic~\cite{hutchison_counterpart_2010,belardinelli_quantified_2021}, however we wanted to prove the goodness of such
 models with the simpler and more intuitive language of linear logic, by providing an equally simple semantic that could
 be easily followed by hand without the noise introduced by fixpoint operators in the semantic of modal languages such as
 the $\mu$-calculus.
 
 In~\Cref{chap:ltl} we will provide a brief introduction to \ac{LTL} and \ac{FOLTL} syntax and interpretation with a
-Kripke-style semantic. In~\Cref{chap:counterpart} we will introduce the multi-sorted model that we will use to
-evaluate the truthness of \ac{FOLTL} formulae with our novel approach based on counterpart relations, then we
-introduce the adapted syntax and semantic, with illustrative examples, models and evaluations. Finally
-in~\Cref{chap:system}, we introduce an Hilbert-style deductive system with comparison to other systems provided in the
-literature, we show the correctness of such system and discuss completeness and decidability. We conclude
-in~\Cref{chap:future} with some remarks about improvements and further questions about the model presented in this
-work, and possible extensions.
+Kripke-style semantic. In~\Cref{chap:counterpart} we will introduce the multi-sorted model that we will use to evaluate
+the truthness of \ac{FOLTL} formulae with our novel approach based on counterpart relations, then we introduce the
+adapted syntax and semantic, with illustrative examples, models and evaluations. Finally in~\Cref{chap:system}, we
+introduce an Hilbert-style deductive system with comparison to other systems provided in the literature, we show the
+correctness of such system and discuss completeness and decidability. We conclude in~\Cref{chap:future} with some
+remarks about improvements and further questions about the model presented in this work, and possible extensions.

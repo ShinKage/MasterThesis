@@ -1,9 +1,11 @@
 \section{Semantics}
 
 \begin{definition}[Semantic of FO-LTL]\label{def:fosemantic}
-Let $M$ be a counterpart model, $\Gamma$ a context, $\pi = \worldcr{w_0}{cr_0}{w_1}, \worldcr{w_1}{cr_1}{w_2}, \ldots$
-an infinite sequence of accessible worlds, and $\sigma$ a substitution with context $\Gamma$ and with world $w_0$.
-The validity of a formula-in-context $\phi$, denoted $\sem{\pi}{\sigma}{\Gamma}{\phi}$, is defined inductively as follows:
+Let $M$ be a counterpart model, $\Gamma$ a context, $\pi = w_0 \overset{cr_0}{\rightsquigarrow} w_1
+\overset{cr_1}{\rightsquigarrow} \ldots$ an infinite sequence of accessible worlds, and $\sigma$ a substitution with
+context $\Gamma$ and with world $w_0$.  The validity of a formula-in-context $\phi$, denoted
+$\sem{\pi}{\sigma}{\Gamma}{\phi}$, is defined inductively as follows:
+
 \begin{align*}
   \pi, \sigma &\vDash_\Gamma tt \\
   \pi, \sigma &\vDash_\Gamma \epsilon_\tau = \eta_\tau &&\text{iff } \sigma(\epsilon) = \sigma(\eta) \\
