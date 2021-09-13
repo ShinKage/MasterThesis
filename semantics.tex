@@ -2,7 +2,7 @@
 
 \begin{definition}[Semantic of FO-LTL]\label{def:fosemantic}
 Let $M$ be a counterpart model, $\Gamma$ a context, $\pi = w_0 \overset{cr_0}{\rightsquigarrow} w_1
-\overset{cr_1}{\rightsquigarrow} \ldots$ an infinite sequence of accessible worlds, and $\sigma$ a substitution with
+\overset{cr_1}{\rightsquigarrow} \ldots$, an infinite sequence of accessible worlds, and $\sigma$ a substitution with
 context $\Gamma$ and with world $w_0$.  The validity of a formula-in-context $\phi$, denoted
 $\sem{\pi}{\sigma}{\Gamma}{\phi}$, is defined inductively as follows:
 
@@ -18,13 +18,16 @@ $\sem{\pi}{\sigma}{\Gamma}{\phi}$, is defined inductively as follows:
   \pi, \sigma &\vDash_\Gamma \nextop{\phi}
       &&\text{iff } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\phi} \\
   \pi, \sigma &\vDash_\Gamma \until{\phi_1}{\phi_2}
-      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \text{ or } (\sem{\pi}{\sigma}{\Gamma}{\phi_1}
+      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \\
+      &&&\quad\text{ or } (\sem{\pi}{\sigma}{\Gamma}{\phi_1}
         \text { and } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\until{\phi_1}{\phi_2}})
 \end{align*}
-  Where $\extend_x : (A \rightharpoonup B) \times B \to (A \cup \set{x} \rightharpoonup B)$ is defined as:
+  where $\extend_x : (A \rightharpoonup B) \times B \to (A \cup \set{x} \rightharpoonup B)$ is defined as:
   \[
     \extend_x(\sigma, v)(y) = \begin{cases} v & \text{if } y = x \\ \sigma(y) & \text{otherwise}\end{cases}
   \]
+  and $\suffix(w_0 \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots, n) =
+  w_n \overset{cr_n}{\rightsquigarrow} w_{n+1} \overset{cr_{n+1}}{\rightsquigarrow} \ldots$
 \end{definition}
 
 The formula $tt$ holds for any possible sequence and assignment. The predicate $=$ models equality for typed terms, where
@@ -45,11 +48,11 @@ for the next operator. An alternative, but equivalent formulation for the semant
       &\text{ and } \foralls{0 \leq i < j}{\sem{\suffix(\pi,i)}{cr_{i-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi_1}}
 \end{align*}
 
-\begin{definition}
+\begin{definition}\label{eq:validmodel}
   A formula $\phi \in \mathcal{F}_\Sigma$ is called \emph{valid for the counterpart model $M$}, denoted by $\vDash_M
-  \phi$, if $\sem{\pi}{\sigma}{\Gamma}{\phi}$ for every context $\Gamma$, infinite sequence $\pi = \worldcr{w_0}{cr_0}{w_1},\worldcr{w_1}{cr_1}{w_2},\ldots$ and substitution $\sigma$ for the world $w_0$.
+  \phi$, if $\sem{\pi}{\sigma}{\Gamma}{\phi}$ for every context $\Gamma$, infinite sequence $\pi = w_0 \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots$ and substitution $\sigma$ for the world $w_0$.
 \end{definition}
-\begin{definition}
+\begin{definition}\label{eq:valid}
   A formula $\phi \in \mathcal{F}_\Sigma$ is called a \emph{consequence} of a set $F \subseteq \mathcal{F}_\Sigma$,
   denoted $F \vDash \phi$, if $\vDash_M \phi$ holds for every model $M$ with $\vDash_M \psi$ for all $\psi \in F$.
 
@@ -57,7 +60,7 @@ for the next operator. An alternative, but equivalent formulation for the semant
 \end{definition}
 
 \section{Other operators}
-Let's explore the semantics of the other common operators defined in the previous chapters.
+Lets explore the semantics of the other common operators defined in the previous chapters.
 
 \begin{align}
   \sem{\pi}{\sigma}{\Gamma}{\phi_1 \land \phi_2}
@@ -131,7 +134,7 @@ Let's explore the semantics of the other common operators defined in the previou
 
 Here we will provide an example of semantic evaluation of a formula, using some of the predicates introduced earlier in the chapter.  Assume we are evaluating according to the counterpart model visually represented by~\Cref{fig:exmemsignature}, with the signature being the idealised memory model in~\Cref{sec:algebra} and the counterpart relations acting as the identity on the objects sort, and on memory location sort as visually represented. 
 
-Let's evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step of computation.
+Lets evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step of computation.
 Because this formula has no free variables it will be evaluated in the empty context, thus the only admissible substitution is the empty substitution, which we will denote with $\bot$.
 
 First, by virtue of the definition of the existential quantifier, we need to evaluate the conjunction in the empty context extended by the two quantified variables, $\sem{\pi}{\sigma}{x,l}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}$.
@@ -154,6 +157,6 @@ avoids undefined values that trivially satisfy equalities, we need a presence pr
 \existss{y_\tau}{x = y}$, which is satisfiable only if $y$ is equal to $x$ and $y$ must be defined, therefore
 also $x$ must be defined.
 
-Note that the formula is not valid in the model described by the figure since there are sequence which does not satisfy
+Note that the formula is not valid in the model described by the figure since there are sequences which do not satisfy
 the formula. A formula that instead is valid is $\phi_2 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\forever{\rho(x)
 = l}}}$, that is always satisfied since the object $A$ exists in every model and it never changes position.

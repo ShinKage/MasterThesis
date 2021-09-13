@@ -1,31 +1,10 @@
-\documentclass[a4paper,11pt]{report}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass[openright,titlepage,numbers=noenddot,headinclude,footinclude,%
+	cleardoublepage=empty,abstract=on,BCOR=5mm,paper=a4,fontsize=11pt,dvipsnames%
+]{scrreprt}
 
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage{mathtools}
-\usepackage{thmtools}
-\usepackage{stmaryrd}
-\usepackage{braket}
-\usepackage{ebproof}
-\usepackage{tabularx}
-\usepackage[printonlyused,withpage]{acronym}
-
-\usepackage{hyperref}
-\usepackage{cleveref}
-\usepackage[autostyle]{csquotes}
-\usepackage[backend=biber]{biblatex}
+\input{config}
 
 \addbibresource{bibliography.bib}
-
-\usepackage{tikz}
-\usetikzlibrary{arrows, cd, positioning}
-\tikzcdset{arrow style=tikz, diagrams={>=stealth'}}
-
-\usepackage{microtype}
 
 \declaretheorem[name=Theorem,numberwithin=section,%
                 refname={theorem,theorems},%
@@ -49,21 +28,28 @@
 
 \input{macros}
 
-% TITLE: Counterpart semantic for First-Order Linear Temporal Logic
+\acrodef{LTL}{Linear Temporal Logic}
+\acrodef{FOLTL}{First-Order Linear Temporal Logic}
+\acrodef{SOLTL}{Second-Order Linear Temporal Logic}
+\acrodef{MSO}{Monadic Second-Order}
+\acrodef{FOL}{First-Order Logic}
+\acrodef{CTL}{Computation Tree Logic}
+\acrodef{PCTL}{Probabilistic Computation Tree Logic}
 
 \begin{document}
+\frenchspacing
+\raggedbottom
+\pagenumbering{roman}
+\pagestyle{plain}
 
-\chapter*{Abstract}
+\input{dirty}
+\input{titlepage}
+\input{abstract}
+\input{contents}
 
-First-Order Linear Temporal Logic (FOLTL) is the extension of the well-known propositional Linear Temporal Logic with
-first-order quantification. Its interpretation is classically over \emph{Kripke-frames}, that is, a set of time-points
-or worlds and an accessibility relation, the properties of which determine the axioms of the logic.  However, such
-interpretation suffers limitations, since it requires restrictions on the accessibility relation between worlds. We
-introduce a novel semantic for FOLTL based on \emph{counterpart relations}, i.e. families of partial homomorphisms
-between algebras. This approach overcomes most limitations, completely removing the \emph{trans-world identity problem}
-and thus streamlining the modeling of dynamic creation, deletion and merging of entities. We also provide the logic with
-a Hilbert-style deductive system, and we conclude with consideration about completeness, decidability and possible
-extensions.
+\cleardoublepage
+\pagestyle{scrheadings}
+\pagenumbering{arabic}
 
 \chapter{Introduction}\label{chap:intro}
 \input{introduction}
@@ -85,17 +71,14 @@ models for the evaluation of the formulae.
 \chapter{Future work}\label{chap:future}
 \input{extensions}
 
-\chapter*{Acronyms}
-\begin{acronym}
-  \acro{LTL}{Linear Temporal Logic}
-  \acro{FOLTL}{First-Order Linear Temporal Logic}
-  \acro{SOLTL}{Second-Order Linear Temporal Logic}
-  \acro{MSO}{Monadic Second-Order}
-  \acro{FOL}{First-Order Logic}
-  \acro{CTL}{Computation Tree Logic}
-  \acro{PCTL}{Probabilistic Computation Tree Logic}
-\end{acronym}
-
-\printbibliography
+\defbibheading{bibintoc}[\bibname]{%
+  \phantomsection
+  \manualmark
+  \markboth{\spacedlowsmallcaps{#1}}{\spacedlowsmallcaps{#1}}%
+  \addtocontents{toc}{\protect\vspace{\beforebibskip}}%
+  \addcontentsline{toc}{chapter}{\tocEntry{#1}}%
+  \chapter*{#1}%
+}
+\printbibliography[heading=bibintoc]
 
 \end{document}

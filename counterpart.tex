@@ -1,13 +1,13 @@
 \section{Counterpart model}
 
-We now introduce the concept of \emph{counterpart model}, as in "counterpart theory" of David
+We now introduce the concept of \emph{counterpart model}, as in ``counterpart theory'' of David
 Lewis~\cite{lewis_counterpart_1968,lewis_plurality_2001}.
 
 \begin{definition}
 Let $\Sigma$ be a signature, and $\algset{A}$ the set of algebras over the signature $\Sigma$. A \emph{counterpart
 model} $M$ is a triple $(W, \rightsquigarrow, d)$ such that:
 \begin{itemize}
-  \item $W$ is a set, representing worlds, i.e. points in time;
+  \item $W$ is a set representing worlds;
   \item $d : W \to \algset{A}$ is a function, assigning to each world $w \in W$ a $\Sigma$-algebra, $\algebra{A} \in
     \algset{A}$;
   \item $\rightsquigarrow\;\subseteq W \times (\algset{A} \rightharpoonup \algset{A}) \times W$ is the
@@ -18,23 +18,25 @@ model} $M$ is a triple $(W, \rightsquigarrow, d)$ such that:
 \end{definition}
 
 As a shorthand notation, counterpart relations between two worlds in the accessibility relation, $(w_1, cr, w_2) \in
-\rightsquigarrow$, will be also denoted as $\worldcr{w_1}{cr}{w_2}$.
-The accessibility relation $\rightsquigarrow$ defines the counterparts in the target world of the source world,
-effectively modeling the evolution of a system, modeled by the algebras, and avoiding the \emph{trans-world identity}
-problem. Names are local to the belonging world, and components are identified across worlds only by the relation
-between names instead of by a universal name. This, and partiality, allows for creation, deletion, renaming and merging
-of elements in a type-preserving manner, however duplication is not permitted as counterpart relation are functions thus
-can only associate a single element of the target world to an element of the source world.
-In other terminology, the counterpart model can be seen as a generalisation of a \emph{graph transition system} where
-transition are labelled with homomorphism between algebras, which are the state of the transition system and can be
-arbitrarily complex within themselves.
+\;\rightsquigarrow$, will be also denoted as $\worldcr{w_1}{cr}{w_2}$.  The accessibility relation $\rightsquigarrow$
+defines the counterparts in the target world of the source world, effectively modeling the evolution of a system,
+modeled by the algebras, and avoiding the \emph{trans-world identity} problem. Names are local to the belonging world,
+and components are identified across worlds only by the relation between names instead of by a universal name. This, and
+partiality, allows for creation, deletion, renaming and merging of elements in a type-preserving manner, however
+duplication is not permitted as counterpart relations are functions thus can only associate a single element of the
+target world to an element of the source world.  In other terminology, the counterpart model can be seen as a
+generalisation of a \emph{graph transition system}~\cite{fiadeiro_temporal_2007} where transition are labelled with
+homomorphism between algebras, which are the state of the transition system and can be arbitrarily complex within
+themselves. Worlds can be considered points in time when we take the traces of these transition systems, the application
+of the partial homomorphism from each world to the next models the transition in the system and thus the evolution of
+time.
 
 For the rest of the work, we will implicitly assume that every counterpart model $M$ does not have deadlock worlds, i.e.
 worlds without outgoing transitions. This condition is not a limitation since a counterpart model that does not satisfy
 the condition can be transformed into one that does satisfy it by adding a reflexive transition to the accessibility
-relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in \rightsquigarrow$, or an ad-hoc world
+relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in\;\rightsquigarrow$, or an ad-hoc world
 with only a reflexive transition. Such modification is typical~\cite{baier_principles_2008} of other works in the field,
-it does not impact the results of this work and it meaningful simplifies the semantics presented here.
+it does not impact the results and it meaningful simplifies the semantics presented here.
 
 \begin{definition}
   Let $X$ be a denumerable sets of variables, and $M = (W, \rightsquigarrow, d)$ be a counterpart model over a signature
@@ -48,5 +50,5 @@ free variable in the term $\epsilon$. If any of the free variables in $\epsilon$
 
 From now on, we will consider only \emph{formulae-in-context}, i.e. formulae with an appropriate context $\Gamma$ that
 must contain at least all the free variables in the formula. Consequently, substitutions for a formula $\phi$ in a
-context $\Gamma$, will be defined over the context gamma. Note that the substitution can still be undefined over some
+context $\Gamma$ will be defined over $\Gamma$. Note that the substitution can still be undefined over some
 or all the values in the domain of $\Gamma$, addressing the need of modeling deallocation of items.

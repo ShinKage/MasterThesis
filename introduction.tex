@@ -1,8 +1,9 @@
 Modal and temporal logics have seen widespread usage in the industry as languages for expressing properties about the
-evolution of complex systems, ranging from single programs to distributed multi-agent systems. Researchers developed
-various tool with visual formalisms, with the objective of modeling the topology and the behaviour of complex systems
-through objects like graphs~\cite{fiadeiro_temporal_2007} and automata~\cite{montanari_structured_2005}, thus it arises
-the need of temporal logics capable of reasoning about the evolution of such systems.
+evolution of complex systems, ranging from single programs to distributed multi-agent systems. Researchers have been
+developing model checkers with various combinations of temporal logics, e.g. probabilistic temporal logic for satellite
+positioning systems~\cite{lu_availability_2014} or communication protocols~\cite{ammar_formal_2011}, spatio-temporal
+logic for vehicular movement~\cite{ciancia_spatio-temporal_2018} or image analysis~\cite{vojnar_voxlogica_2019}, and
+visual formalism such as graphs~\cite{fiadeiro_temporal_2007} and automata~\cite{montanari_structured_2005}.
 
 Research efforts have been mainly devoted to propositional flavors of temporal logic with surveys and
 monographies~\cite{pnueli_temporal_1977,kroger_temporal_2008}. Investigations on quantified version of temporal logics
@@ -24,14 +25,15 @@ We introduce a novel semantic for quantified \ac{LTL} in the tradition of counte
 elements of different worlds, which are in principle unique to such worlds. Various results have been published on
 models and axiomatic systems with counterpart relation and modal
 logic~\cite{hutchison_counterpart_2010,belardinelli_quantified_2021}, however we wanted to prove the goodness of such
-models with the simpler and more intuitive language of linear logic, by providing an equally simple semantic that could
-be easily followed by hand without the noise introduced by fixpoint operators in the semantic of modal languages such as
-the $\mu$-calculus.
+models with the simpler and more intuitive language of \ac{LTL}, by providing an equally simple semantic that could be
+easily followed by hand without the lack of immediate clarity introduced by fixpoint operators in the semantic of modal
+languages such as the $\mu$-calculus.
 
 In~\Cref{chap:ltl} we will provide a brief introduction to \ac{LTL} and \ac{FOLTL} syntax and interpretation with a
 Kripke-style semantic. In~\Cref{chap:counterpart} we will introduce the multi-sorted model that we will use to evaluate
 the truthness of \ac{FOLTL} formulae with our novel approach based on counterpart relations, then we introduce the
-adapted syntax and semantic, with illustrative examples, models and evaluations. Finally in~\Cref{chap:system}, we
-introduce an Hilbert-style deductive system with comparison to other systems provided in the literature, we show the
-correctness of such system and discuss completeness and decidability. We conclude in~\Cref{chap:future} with some
+adapted syntax and novel semantics, with illustrative examples, models and evaluations. Finally in~\Cref{chap:system},
+we introduce an Hilbert-style deductive system which is consistent with our novel semantics, and we will provide
+comparisons to other systems provided in the literature We will show the correctness of such system and discuss
+completeness and decidability, which are in line with previous results.  We conclude in~\Cref{chap:future} with some
 remarks about improvements and further questions about the model presented in this work, and possible extensions.

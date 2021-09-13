@@ -24,31 +24,52 @@ The syntax is almost identical to the one introduced in~\Cref{def:kripkefoltlsyn
 equality of terms, which we will further specify in the next section, and the existential quantifier is instead a family
 of operators indexed by the sorts of the signature.
 
-\begin{example}
-  Let's model some general properties that can be resonable in a large space of signatures, as a consequence these will
-  really be a family of typed predicates. We will start with simple predicates that exemplifies some of the feature of
-  such a language in isolation: we first need to identify entities which are available in a given world,
-  $\text{presence}(x_\tau) \equiv \existss{y_\tau}{x = y}$, then we can construct simple temporal formulae, for example
-  we can require that an entity is always present $\forever{\text{presence}(x_\tau)}$ or that it will be deleted in the next
-  step, $\text{will-delete}(x_\tau) \equiv \text{presence}(x_\tau) \land \nextop{\neg\text{presence}(x_\tau)}$ or at some
-  point in the future, never to be allocated again: $\text{perm-deallocate}(x_\tau) \equiv \text{presence}(x_\tau) \land \eventually{\forever{\neg\text{presence}(x_\tau)}}$
-  Conversely to deallocation, we can model allocations and creation of entities by reversing the deletion formula
-  $\text{one-new}(x_\tau) \equiv \neg\text{presence}(x_\tau) \land \nextop{\neg\text{presence}(x_\tau)}$. For example
-  we can require entities to be always allocated and then deallocated in a managed memory context:
-  $\forever{\foralls{x_\tau}{\eventually{\text{one-new}(x) \land \eventually{\text{perm-deallocate}(x_\tau)}}}}$.
-  Another example is $\text{will-merge}(x_\tau, y_\tau) \equiv \until{(presence(x) \land presence(y) \land x \neq y)}{(presence(x) \land presence(y) \land x = y)}$, which intuitively means that the arguments of
-  the predicate will necessarily merge into a single entity in the current world or at some point in the future.
+Now we will show, as examples, some general properties that can be reasonable in a large space of signature and that
+display the features of the logic. Before introducing complex formulae we need to identify entities which are available
+in a given world: $\text{presence}(x_\tau) \equiv \existss{y_\tau}{x = y}$. The existential quantifier requires a
+concrete value, which is avilable in the current world, that is equal to the value we are checking the presence of, even
+if is the counterpart of some other entity in a previously accessible world.
 
+\begin{example}[Deallocation]
+  Checking that an entity of sort $\tau$ is deallocated at the next point in time is simple enough:
+  \[\text{will-delete}(x_\tau) \equiv \text{presence}(x_\tau) \land \nextop{\neg\text{presence}(x_\tau)}\] Note that with
+  counterpart relations the issue highlighted in~\Cref{ex:domains} is solved without additional restrictions.
+  Intuitively, if an enitity is not related to any entity in the next accessible world than the partiality of the
+  homomorphism between these worlds will remove the original entity and since each name is unique to each world, no new
+  entity can be related to the original one. The semantics in the next chapter will formally translate this intuition.
+  Slight tweakings of the formula can describe an entity which will be deallocated at some undefined point in the
+  future, never to be allocated again: \[\text{perm-deallocate}(x_\tau) \equiv \text{presence}(x_\tau) \land
+  \eventually{\forever{\neg\text{presence}(x_\tau)}}\]
+\end{example}
+\begin{example}[Allocation]
+  Allocation mirrors deallocation, for example the converse of $\text{will-delete}$ is: \[\text{one-new}(x_\tau) \equiv
+  \neg\text{presence}(x_\tau) \land \nextop{\text{presence}(x_\tau)}\] A common practice when dealing with manual memory management
+  is to always deallocate memory after allocations, we can construct a formula that translates this informal
+  requirement: \[\forever{\foralls{x_\tau}{(\eventually{\text{one-new}(x_\tau)} \to
+  \eventually{\text{will-delete}(x_\tau)})}}\] The forever operator at the head of the formula is required, otherwise we
+  would only quantify over the possible object in the current world, instead of all the possible objects in future
+  worlds.
+\end{example}
+\begin{example}[Merge]
+  For merging we can use a combination of $\text{presence}$ and equality to check whether two entities evolve into the
+  same entity, in this particular case the two entities must exist distinctly until merge that must happen at some
+  future point in time:
+  \[
+    \until{(\text{presence}(x_\tau) \land
+  \text{presence}(y_\tau) \land x_\tau \neq y_\tau)}{(\text{presence}(x_\tau) \land x_\tau
+  = y_\tau)}\]
+\end{example}
+\begin{example}[Graphs and bounds]
   Recall the signature for simple directed graphs introduced in~\Cref{sec:algebra}, we can define predicates on the
   structure of the worlds, e.g. $\text{loop}(x_{\tau_e}) \equiv s(x) = t(x)$ which means that the edge $x$ must be a
-  loop in the worlds that satisfy the predicate. We can also model the evolution of complex structures, e.g.
-  $\text{at-most-2}_\tau \equiv \foralls{x_\tau}{\foralls{y_\tau}{\foralls{z_\tau}{x = y \lor y = z \lor z = x}}}$ is
+  loop in the worlds that satisfy the predicate. We can also model the evolution of complex structures: 
+  \[\text{at-most-2}_\tau \equiv \foralls{x_\tau}{\foralls{y_\tau}{\foralls{z_\tau}{x = y \lor y = z \lor z = x}}}\] is
   true for worlds where the number of entities of sort $\tau$ is bounded by 2. This predicate can be extended to larger
   boundaries or enforced during the evolution of the system, e.g. assume that the graph signature is used to model a net
   of unidirectional inter-process communication channel, we may want to verify that the number of channel, or edges,
   spawned during the whole execution is bounded by some number $n$ than we must verify the formula
   $\forever{\text{at-most-n}}$; or we may want to make sure that after reaching maximum capacity, the programs
-  continously deallocate channels until a minimum bound $m$ is reached, thus $\forever{(\text{at-most-n} \land (\text{exactly-n} \to
-  \until{(\existss{x}{\text{will-delete}(x)})}{\text{at-most-m}}))}$, where $\text{exactly-n}$ is a predicate that
+  continously deallocate channels until a minimum bound $m$ is reached, thus \[\forever{(\text{at-most-n} \land (\text{exactly-n} \to
+  \until{(\existss{x}{\text{will-delete}(x)})}{\text{at-most-m}}))}\] where $\text{exactly-n}$ is a predicate that
   is true when there are exactly $n$ distinct entities of a given sort.
 \end{example}

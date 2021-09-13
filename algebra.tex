@@ -6,14 +6,14 @@
   \in \Sigma_\tau, i = 1, \ldots, n}$ is a set of function symbols.
 \end{definition}
 
-We show a couple of signatures that will be used throughout the work. First, let's model simple directed graphs, which
+We show a couple of signatures that will be used throughout the work. First, let us model simple directed graphs, which
 have two sorts: vertices, $\tau_v$, and edges $\tau_e$. Naturally to identify edges we require two operations, $s$, $t$
 both of type $\tau_e \to \tau_v$, which respectively identify the source and target of a given edge. Thus the complete
 signature for simple directed graph is $\Sigma = (\set{\tau_v, \tau_e}, \set{s : \tau_e \to \tau_v, t : \tau_e \to
 \tau_v})$.
 
 Next we present the signature for a simplified memory management model. Once again we have two sorts: objects, $\tau_o$, and
-memory locations $\tau_l$. The only operation is the function that associate to each object it's memory location,
+memory locations $\tau_l$. The only operation is the function that associate to each object its memory location,
 $\rho$. Thus the complete signature is $\Sigma = (\set{\tau_o, \tau_l}, \set{\rho : \tau_o \to \tau_l})$.
 
 \begin{definition}[Many-sorted Algebra]
@@ -77,23 +77,32 @@ $\rho$. Thus the complete signature is $\Sigma = (\set{\tau_o, \tau_l}, \set{\rh
 \end{figure}
 
 Recall the signature for simple directed graphs defined earlier, a $\Sigma$-algebra for that signature is a particular
-instance of a simple directed graph and homomorphism between them are partial homomorphism between graphs. For example
-the graphs in \autoref{fig:egsdgraphs} are visual representation of the following algebras: $\algebra{G}_0 =
-(\set{\set{n_0, n_1, n_2},\set{e_0, e_1, e_2}}, \set{s^{\algebra{G}_0}, t^{\algebra{G}_0}})$, where $s^{\algebra{G}_0} =
-\set{e_0 \mapsto n_0, e_1 \mapsto n_1, e_2 \mapsto n_2}$ and $t^{\algebra{G}_0} = \set{e_0 \mapsto n_1, e_1 \mapsto n_2,
-e_2 \mapsto n_0}$; $\algebra{G}_1 = (\set{\set{n_3,n_4},\set{e_3,e_4}},\set{s^{\algebra{G}_1},t^{\algebra{G}_1}})$,
-where $s^{\algebra{G}_1} = \set{e_3 \mapsto n_3, e_4 \mapsto n_4}$ and $t^{\algebra{G}_1} = \set{e_3 \mapsto e_3, e_4
-\mapsto n_3}$.  $\algebra{G}_2 =
-(\set{\set{n_5,n_6,n_7},\set{e_5,e_6,e_7,e_8}},\set{s^{\algebra{G}_2},t^{\algebra{G}_2}})$, where $s^{\algebra{G}_2} =
-\set{e_5 \mapsto n_5,e_6 \mapsto n_6,e_7\mapsto n_5, e_8 \mapsto n_7}$ and $t^{\algebra{G}_2} = \set{e_5 \mapsto n_6,e_6
-\mapsto n_5,e_7 \mapsto n_7, e_8 \mapsto n_7}$.
+instance of a simple directed graph and homomorphisms between them are partial homomorphism between graphs.
+
+\begin{example}
+The graphs in \autoref{fig:egsdgraphs} are visual representation of the following algebras:
+\begin{align*}
+  \algebra{G}_0 &= (\set{\set{n_0, n_1, n_2},\set{e_0, e_1, e_2}}, \set{s^{\algebra{G}_0}, t^{\algebra{G}_0}}) \\
+  s^{\algebra{G}_0} &= \set{e_0 \mapsto n_0, e_1 \mapsto n_1, e_2 \mapsto n_2} \\
+  t^{\algebra{G}_0} &= \set{e_0 \mapsto n_1, e_1 \mapsto n_2, e_2 \mapsto n_0} \\[1.5ex]
+  \algebra{G}_1 &= (\set{\set{n_3,n_4},\set{e_3,e_4}},\set{s^{\algebra{G}_1},t^{\algebra{G}_1}}) \\
+  s^{\algebra{G}_1} &= \set{e_3 \mapsto n_3, e_4 \mapsto n_4} \\
+  t^{\algebra{G}_1} &= \set{e_3 \mapsto e_3, e_4 \mapsto n_3} \\[1.5ex]
+  \algebra{G}_2 &= (\set{\set{n_5,n_6,n_7},\set{e_5,e_6,e_7,e_8}},\set{s^{\algebra{G}_2},t^{\algebra{G}_2}}) \\
+  s^{\algebra{G}_2} &= \set{e_5 \mapsto n_5,e_6 \mapsto n_6,e_7\mapsto n_5, e_8 \mapsto n_7} \\
+  t^{\algebra{G}_2} &= \set{e_5 \mapsto n_6,e_6 \mapsto n_5,e_7 \mapsto n_7, e_8 \mapsto n_7}
+\end{align*}
 
 In the same figure are also visually represented partial homomorphism between those graphs that can be translated to:
-$\algebra{G}_0 \to \algebra{G}_1 = \set{\set{n_1 \mapsto n_4,n_2 \mapsto n_3},\set{e_1 \mapsto e_4}}$ and $\algebra{G}_1
-\to \algebra{G}_2 = \set{\set{n_4 \mapsto n_5, n_3 \mapsto n_6},\set{e_4 \mapsto e_5, e_3 \mapsto e_6}}$, where the
+\begin{align*}
+  \algebra{G}_0 \to \algebra{G}_1 &= \set{\set{n_1 \mapsto n_4,n_2 \mapsto n_3},\set{e_1 \mapsto e_4}} \\
+  \algebra{G}_1 \to \algebra{G}_2 &= \set{\set{n_4 \mapsto n_5, n_3 \mapsto n_6},\set{e_4 \mapsto e_5, e_3 \mapsto e_6}}
+\end{align*}
+ where the
 requirements for homomorphism are trivially checkable. Notice that the first example of homomorphism shows an interesting
 behaviour for our purpose. Due to partiality it removes the node $n_0$ and the edges $e_0$, $e_2$ while preserving the
 structure of the nodes $n_1$, $n_2$ and the edge $e_1$ between them.
+\end{example}
 
 To model existential properties, we can extend a signature $\Sigma$ with a denumerable set $X$ of variables typed over
 $S_\Sigma$, obtaining the signature $\Sigma_X$. The $\tau$-typed subset of $X$ is denoted with $X_\tau$, and typed
@@ -119,7 +128,7 @@ variables are denoted with $x_\tau$ or $x : \tau$. $\tau$-sorted terms are denot
 \end{definition}
 
 \begin{example}[Terms]
-  Let be $\Sigma = (\set{\tau}, \set{1 : \tau, \otimes : \tau \to \tau})$ a monoidal signature with a single sort. Let
+  Let $\Sigma = (\set{\tau}, \set{1 : \tau, \otimes : \tau \to \tau})$ be a monoidal signature with a single sort. Let
   be $X$ a denumerable set of variables with $x, y, z \in X$, then some example of terms in $\terms{\Sigma}{X}$ are $1
   \otimes 1 : \tau$, $x \otimes (y \otimes 1) : \tau$ and $(x \otimes 1) \otimes (1 \otimes y) : \tau$. Examples from
   the previously defined graph algebra $\Sigma$ are $s(x)$ and $t(y)$ which represent respectively the source vertex for

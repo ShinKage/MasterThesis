@@ -1,11 +1,34 @@
 \section{Axioms}
-The following definition will introduce a Hilbert-style axiomatic system for \ac{FOLTL}. The axioms and inference rules
-follow the pre-existing tradition on finitary axiomatic systems for
+
+The following definition will introduce a Hilbert-style deductive system for \ac{FOLTL}. Formally, the formal system is
+constituted by a set of formulae called \emph{axioms}, and a set of rules called \emph{inference rules}, of the form
+$\phi_1, \ldots, \phi_n \vdash \psi$. The formulae in the non-empty set $\phi_1, \ldots, \phi_n$ are called
+\emph{premises}, the formula $\psi$ is called \emph{conclusion}. The relation $\vdash$ defines the derivability of a
+formula, given a set of formulae $F$ the derivability relation is defined inductively as follows:
+\begin{enumerate}
+  \item $F \vdash \psi$ if $\psi$ is in the set of axioms;
+  \item $F \vdash \psi$ if $\psi \in F$;
+  \item $F \vdash \psi$ if $\psi$ is a conclusion of an inference rule and for every premise $\phi$ of the rule it must
+    hold that $F \vdash \phi$.
+\end{enumerate}
+A formula $\psi$ is called \emph{derivable}, denoted $\vdash \psi$, if $\emptyset \vdash \psi$.
+
+A requirement for any reasonable formal system is the so-called \emph{soundness}, i.e. the derivability of a formula in
+the formal system implies the validity of the formula as defined in~\Cref{eq:valid}:
+\[
+  F \vdash \phi \Rightarrow F \vDash \phi
+\]
+Some systems model logics, e.g. propositional calculus, that allows for the converse relation, the so-called \emph{completeness}, i.e. if a formula is valid than there must exist a derivation:
+\[
+  F \vDash \phi \Rightarrow F \vdash \phi
+\]
+
+The axioms and inference rules follow the pre-existing tradition on finitary axiomatic systems for
 \ac{FOLTL}~\cite{burgess_axioms_1982,xu_us-tense_1988}, with one notable and somewhat controversial missing axiom that
 will be discussed in the following sections.
 
-\begin{definition}[Axiomatic system]\label{def:axioms}
-  The axiomatic system for FO-LTL contains the following axioms:
+\begin{definition}\label{def:axioms}
+  The Hilbert-style deductive system for \ac{FOLTL} contains the following axioms:
   \begin{enumerate}
     \item $\phi_1 \to (\phi_2 \to \phi_1)$;
     \item $(\phi_1 \to (\phi_2 \to \phi_3)) \to ((\phi_1 \to \phi_2) \to (\phi_1 \to \phi_3))$;
@@ -221,7 +244,7 @@ With the following lemmas and theorems we will provide correctness results for t
 \begin{proof}
   Let $M$ be a counterpart model that satisfies $\vDash_M \psi$ for every $\psi \in F$ and $\Gamma$.
   Assume $\semn{\pi}{\sigma}{\Gamma}{(\existss{x}{\phi_1}) \to \phi_2}$ for some sequence $\pi = w_0 \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots$
-  and assignment $\sigma$, it follows that $\sem{\pi}{\sigma}{\Gamma}{\existss{x}{\phi_1}}$ and $\semn{\sigma}{w}{\Gamma}{\phi_2}$.
+  and assignment $\sigma$, it follows that $\sem{\pi}{\sigma}{\Gamma}{\existss{x}{\phi_1}}$ and $\semn{\pi}{\sigma}{\Gamma}{\phi_2}$.
   Then there is a $v \in d(w_0)$ such that $\sem{\pi}{\ext{x}{\sigma}{v}}{\Gamma, x}{\phi_1}$, by definition of existential
   quantifier. Since $\phi_2$ does not contain $x$ as a free variable, adding an evaluation for $x$ does not change the
   evaluation of $\phi_2$, i.e. $\semn{\pi}{\ext{x}{\sigma}{v}}{\Gamma, x}{\phi_2}$, therefore
@@ -250,15 +273,15 @@ With the following lemmas and theorems we will provide correctness results for t
       \psi_1 \to \psi_2$ and $F \vDash \psi_1 \to \nextop{\psi_2}$, hence $F \vDash \psi_1 \to \forever{\psi_2}$ follows
       by \Cref{lem:ind};
     \item if $\phi$ is the conclusion of a (par) rule with premises $F \vdash \psi_1 \to \psi_2$, thus $\phi \equiv
-      \existss{x}{\psi_1} \to \psi_2$ with $x$ not free in $\psi_2$: by induction hypothesis we have $F \vDash \psi_1
-      \to \psi_2$, hence $F \vDash \exists{x}{\psi_1} \to \psi_2$ follows by \Cref{lem:par}.
+      (\existss{x}{\psi_1}) \to \psi_2$ with $x$ not free in $\psi_2$: by induction hypothesis we have $F \vDash \psi_1
+      \to \psi_2$, hence $F \vDash (\existss{x}{\psi_1}) \to \psi_2$ follows by \Cref{lem:par}.
   \end{enumerate}
 \end{proof}
 
 \begin{example}\label{ex:alw}
   We show the derivation of some rules to show the capabilities of the deduction system.
   In the following derivation we will denote as (prop) all the rules that are tautology in propositional
-  logic, since it's completely described by the first three axioms of the system.
+  logic, since it is completely described by the first three axioms of the system.
 
   We will start with a variant of the (ind) rule, $\phi \to \nextop{\phi} \vdash \phi \to \forever{\phi}$, which we will call (ind1):
 
@@ -297,8 +320,8 @@ As in the propositional calculus and \ac{FOL}, in the next pair of theorems we w
 implication and the derivability of a formula.
 
 \begin{theorem}[Deduction Theorem]
-  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F \cup \set{\phi_1} \vdash
-  \phi_2$ and this deriviation of $\phi_2$ does not contains application of the rule (par) for a variable occurring free
+  Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F, \phi_1 \vdash
+  \phi_2$ and this derivation of $\phi_2$ does not contains application of the rule (par) for a variable occurring free
   in $\phi_1$, then $F \vdash \forever{\phi_1} \to \phi_2$.
 \end{theorem}
 \begin{proof}
@@ -358,6 +381,20 @@ implication and the derivability of a formula.
   \end{enumerate}
 \end{proof}
 
+The Deduction Theorem has two peculiarities that makes it different from the equivalent deduction theorem in \ac{FOL},
+i.e. $F, \phi_1 \vdash \phi_2 \Rightarrow F \vdash \phi_1 \to \phi_2$, both are attested since the first axiomatizations
+of quantified temporal logics~\cite{kozen_verification_1982}.
+
+First, the introduction of the forever operator in the premise of the implication. It's trivial to show that $F, \phi_1
+\vdash \phi_2 \Rightarrow F \vdash \phi_1 \to \phi_2$ does not hold. For example, $\phi_1 \vdash \forever{\phi_1}$
+trivially holds by the (alw) induction rule, but $\vdash \phi_1 \to \forever{\phi_1}$ is trivially not a theorem. If the
+additional constraint of not containing the application of the (nex) rule is applied then we can recover the more common
+form of deduction theorem, although in a restricted variant.
+
+Second, the derivation must not contain an application of (par) for a variable occurring free in the premise.  This
+restriction is required for the rule (par) in the derivation (3) of the last point in the proof, as shown by
+the~\Cref{lem:par}.
+
 \begin{theorem}
   Let $\phi_1, \phi_2 \in \mathcal{F}_\Sigma$ and $F \subseteq \mathcal{F}_\Sigma$. If $F \vdash \forever{\phi_1} \to
   \phi_2$, then $F, \phi_1 \vdash \phi_2$.
@@ -394,7 +431,7 @@ model to include such axiom, since one of the main drive of this alternative int
 necessity of modeling systems with creation and deallocation of resources.
 
 \section{Completeness and Decidability}
-The model presented in this work is not exempt from all the consideration on completeness available in literature for
+The model presented in this work is not exempt from all the considerations on completeness available in literature for
 quantified temporal logic~\cite{merz_decidability_1992}. Since the signature and the axioms for the theory of natural
 numbers can be encoded in our system, it follows that our logic is
 incomplete~\cite{barwise_incompleteness_1977,tarski_undecidable_1953}.
@@ -429,7 +466,7 @@ also showed that there are reasonable fragments that are, indeed, decidable but 
 restrictions~\cite{hodkinson_decidable_2000,hodkinson_decidable_2002,goos_monodic_2001,peyras_decidable_2020,peyras_bounded_2019}.
 The main issue is the interaction between temporal operators and quantifiers, in particular the until operator. One
 approach is to limit the number of variables quantified within the scope of temporal operators, in particular
-restricting temporal formulae to be monodic, thanks to decidability results on monodic second-order
+restricting temporal formulae to be monadic, thanks to decidability results on monadic second-order
 logic~\cite{rozenberg_expression_1997}. Another approach is to limit the nestedness of operators, for example we must
 avoid nested forever operators, or the usage of temporal operators inside the scope of a universal quantifier.
 Nonetheless, there are still issues with classical operators, and we must restrict also the usage of those to an

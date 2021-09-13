@@ -57,11 +57,10 @@ inductively as follows:
   \pi, \sigma, \xi &\vDash_\Gamma^\Delta \nextop{\phi}
       &&\text{iff } \semtwo{\suffix(\pi,1)}{cr_0 \circ \sigma}{2^{cr_0} \circ \xi}{\Gamma}{\Delta}{\phi} \\
   \pi, \sigma, \xi &\vDash_\Gamma^\Delta \until{\phi_1}{\phi_2}
-     &&\text{iff } \semtwo{\pi}{\sigma}{\xi}{\Gamma}{\Delta}{\phi_2} \text{ or } \\
-     &&&\qquad(\semtwo{\pi}{\sigma}{\xi}{\Gamma}{\Delta}{\phi_1}
-         \text { and } \semtwo{\suffix(\pi,1)}{cr_0 \circ \sigma}{2^{cr_0} \circ \xi}{\Gamma}{\Delta}{\until{\phi_1}{\phi_2}}) \\
+     &&\text{iff } \semtwo{\pi}{\sigma}{\xi}{\Gamma}{\Delta}{\phi_2} \text{ or } (\semtwo{\pi}{\sigma}{\xi}{\Gamma}{\Delta}{\phi_1} \\
+         &&&\qquad\text { and } \semtwo{\suffix(\pi,1)}{cr_0 \circ \sigma}{2^{cr_0} \circ \xi}{\Gamma}{\Delta}{\until{\phi_1}{\phi_2}}) \\
 \end{align*}
-  Where $2^{cr}$ is the lifting of the partial function $cr$ to the power-set of the image, and $\extend$ defined as
+  where $2^{cr}$ is the lifting of the partial function $cr$ to the power-set of the image, and $\extend$ defined as
   in~\Cref{def:fosemantic}.
 \end{definition}
 
@@ -92,20 +91,20 @@ quantified version of \ac{CTL}~\cite{hodkinson_decidable_2002}.
   \pi, \sigma &\vDash_\Gamma \nextop{\phi}
       &&\text{iff } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\phi} \\
   \pi, \sigma &\vDash_\Gamma \until{\phi_1}{\phi_2}
-      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \text{ or } (\sem{\pi}{\sigma}{\Gamma}{\phi_1}
+      &&\text{iff } \sem{\pi}{\sigma}{\Gamma}{\phi_2} \\ &&&\quad\text{ or } (\sem{\pi}{\sigma}{\Gamma}{\phi_1}
         \text { and } \sem{\suffix(\pi, 1)}{cr_0 \circ \sigma}{\Gamma}{\until{\phi_1}{\phi_2}}) \\
   \pi, \sigma &\vDash_\Gamma \existpath{\phi}
       &&\text{iff } \existss{\pi' \in \paths(\pi_0)}{\sem{\pi'}{\sigma}{\Gamma}{\phi}} \\
   \pi, \sigma &\vDash_\Gamma \forallpath{\phi}
       &&\text{iff } \foralls{\pi' \in \paths(\pi_0)}{\sem{\pi'}{\sigma}{\Gamma}{\phi}} \\
 \end{align*}
-Where $\extend$ is defined as in~\Cref{def:fosemantic}, and $\paths(w) = \set{\pi | \pi = w \overset{cr_0}{\rightsquigarrow}
-w_1 \overset{cr_1}{\rightsquigarrow} \ldots}$.
+Where $\extend$ is defined as in~\Cref{def:fosemantic}, and paths is the set of traces starting from the argument world,
+$\paths(w) = \set{\pi | \pi = w \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots}$.
 
 The translation from \ac{LTL} to \ac{CTL} is straightforawrd. The operators that operate on single world are
 semantically identical to their \ac{LTL} variants. The path operators instead quantify over the set of paths that start
 from the current world.
 
 Logically the next step would be investigating an axiomatic system for \ac{CTL} or extending the semantic to \ac{CTL}* a
-superset of both \ac{LTL} and \ac{CTL}. Another avenue is to add a probability measure to the transition in the
+superset of both \ac{LTL} and \ac{CTL}. Another approach is to add a probability measure to the transitions in the
 counterpart model, thus adding a probability operator, as in \ac{PCTL}~\cite{brazdil_satisfiability_2008}.

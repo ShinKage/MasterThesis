@@ -1,7 +1,7 @@
 In the following sections we will shortly summarise both syntax and semantics of linear temporal logic in the
 propositional form and show the issue of directly translating it to the quantified first-order version. Since many
 combinations of both unary and binary operators have been studied as forms of linear temporal
-logic~\cite{pnueli_temporal_1977,gabbay_temporal_1994}, we will investigate only the somewhat common case of a logic
+logic~\cite{pnueli_temporal_1977,gabbay_temporal_1994}, we will investigate only the somewhat common core of a logic
 with a singular primitive unary operation, \emph{next}, and a singular primitive binary operation, \emph{until}.
 Nonetheless, both the classical approach and the one presented in this work can be trivially extended with other
 operators known in the literature~\cite{kroger_temporal_2008}, like \emph{unless}.
@@ -59,7 +59,7 @@ $\forever{\phi}$ means that the formula $\phi$ holds at each possible next step.
     \node[vertex] (2f) [right = 1cm of 1f, label=$\phi$] {};
     \node[vertex] (3f) [right = 1cm of 2f] {};
     \coordinate[right = 1cm of 3f] (4f);
-    \node[left = 1cm of 0f] (eventually) {$F\phi$};
+    \node[left = 1cm of 0f] (eventually) {$\eventually{\phi}$};
 
     \path[->] (0f) edge [] (1f);
     \path[->, dotted] (1f) edge [] (2f);
@@ -71,7 +71,7 @@ $\forever{\phi}$ means that the formula $\phi$ holds at each possible next step.
     \node[vertex] (2g) [right = 1cm of 1g, label=$\phi$] {};
     \node[vertex] (3g) [right = 1cm of 2g, label=$\phi$] {};
     \coordinate[right = 1cm of 3g] (4g);
-    \node[left = 1cm of 0g] (forever) {$G\phi$};
+    \node[left = 1cm of 0g] (forever) {$\forever{\phi}$};
 
     \path[->] (0g) edge [] (1g);
     \path[->, dotted] (1g) edge [] (2g);
@@ -82,15 +82,16 @@ $\forever{\phi}$ means that the formula $\phi$ holds at each possible next step.
   \caption{Example of temporal traces for operators}
 \end{figure}
 
-LTL formulae can encode safety properties, commonly with the form $G\neg\phi$, and liveness properties of systems,
-commonly with the form $GF\phi$ or $G(\phi_1 \to F\phi_2)$~\cite{baier_principles_2008}. Let's assume that we have two
-concurrent processes and that we can encode with two atomic propositions, $\text{crit}_1$ and $\text{crit}_2$, when the
-two processes can access a critical section, then the property of mutual exclusivity can be model by the formula
-$G(\neg\text{crit}_1 \lor \neg\text{crit}_2)$. If we also have atomic propositions for wait conditions, $\text{wait}_1$,
-then we can model liveness conditions, for example $G(\text{wait}_1 \to F\text{crit}_1)$ which means that whenever a
+LTL formulae can encode safety properties, commonly with the form $\forever{\neg\phi}$, and liveness properties of
+systems, commonly with the form $\forever{\eventually{\phi}}$ or $\forever{(\phi_1 \to
+\eventually{\phi_2})}$~\cite{baier_principles_2008}. Assume that we have two concurrent processes and that we can
+encode with two atomic propositions, $\text{crit}_1$ and $\text{crit}_2$, when the two processes can access a critical
+section, then the property of mutual exclusivity can be model by the formula $\forever{(\neg\text{crit}_1 \lor
+\neg\text{crit}_2)}$. If we also have atomic propositions for wait conditions, $\text{wait}_1$, then we can model
+liveness conditions, for example $\forever{(\text{wait}_1 \to \eventually{\text{crit}_1})}$ which means that whenever a
 process reaches a wait condition, eventually will enter the critical section; we can also model fairness conditions, for
-example $GF\text{wait}_1 \to GF\text{crit}_1$ means that if the process infinitely often reaches a wait condition than
-infinitely often will reach the critical section.
+example $\forever{\eventually{\text{wait}_1}} \to \forever{\eventually{\text{crit}_1}}$ means that if the process
+infinitely often reaches a wait condition than infinitely often will reach the critical section.
 
 \section{Semantic}
 
@@ -110,7 +111,7 @@ trace of the model, i.e. an infinite ascending chain of the accessibility relati
 $\pi = t_0t_1t_2\ldots$ with $t_i \prec t_{i+1}$ for every $i \geq 0$.
 
 \begin{definition}[LTL semantic]
-  The truthness of a LTL formula $\phi$ with the chain $\pi$ over the temporal model $M$, denoted as
+  The truthness of a LTL formula $\phi$ with respect to chain $\pi$ over the temporal model $M$, denoted as
   $M, \pi \vDash \phi$ is defined inductively as follows:
   \begin{align*}
     \pi &\vDash tt && \\
@@ -121,7 +122,7 @@ $\pi = t_0t_1t_2\ldots$ with $t_i \prec t_{i+1}$ for every $i \geq 0$.
     \pi &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j) \vDash \phi_2 \land
       (\foralls{0 \leq i < j}{\suffix(\pi, i) \vDash \phi_1})}
   \end{align*}
-  Where $\suffix(\pi, n)$ removes the first $n$ elements of the chain $\pi$.
+  where $\suffix(\pi, n)$ removes the first $n$ elements of the chain $\pi$.
 \end{definition}
 
 \section{First-Order Extension}
@@ -133,15 +134,16 @@ point in time. Symbols that are established to be time-dependent are called \emp
 symbols are called \emph{rigid}.
 
 Nonetheless both classical logic~\cite{turing_computable_1937} and linear temporal logic~\cite{merz_decidability_1992}
-have in common the trait of becoming indecidable when passing from propositional calculi to first-order calculi.
-Furthermore First-Order Linear Temporal Logic is proven to be also incomplete.
+have in common the trait of becoming indecidable when passing from propositional to first-order calculi.
+Furthermore \ac{FOLTL} is proven to be also incomplete, i.e. there are theorems which cannot be proven by any formal
+system that models \ac{FOLTL}, at least for finitary formal systems.
 
-In the following paragraphs we will show a general syntax and semantics of First-Order Linear Temporal Logic, what are
+In the following paragraphs we will show a general syntax and semantics of \ac{FOLTL}, what are
 the condition for completeness and some of the issue with the most common semantic.
 
 \begin{definition}[First-Order Linear Temporal Logic]\label{def:kripkefoltlsyn}
   Let $\mathcal{P}$ be a set of predicates each with a specific arity, and let $X$ be a denumerable set of variables.
-  The set $\mathcal{F}_{FO}$ of formulae for First-Order Linear Temporal Logic is the set generated by the following grammar:
+  The set $\mathcal{F}_{FO}$ of formulae for \ac{FOLTL} is the set generated by the following grammar:
   \[
     \phi \Coloneqq tt \;|\; P(x_1, \ldots, x_n)
                       \;|\; \neg\phi
@@ -157,13 +159,13 @@ Universal quantification can be modeled with the translation from the existentia
   \foralls{x}{\phi} \equiv \neg\existss{x}{\neg\phi}
 \]
 
-Example of properties can be modeled with the first-order extension are:
+A simple example of a property that can easily be modeled with the first-order extension is:
 \[
-  \existss{x}{G(\text{channel}(x) \land \text{open}(x))}
+  \existss{x}{\forever{(\text{channel}(x) \land \text{open}(x))}}
 \]
 with the intuitive meaning that there must always exists at least one open channel; or:
 \[
-  \foralls{x}{G(\text{channel}(x) \to (\until{\text{open}(x)}{(\neg\existss{y}{\text{message}(y) \land \text{pending}(x, y)})}))}
+  \forever{\foralls{x}{(\text{channel}(x)} \to (\until{\text{open}(x)}{(\neg\existss{y}{\text{message}(y) \land \text{pending}(x, y)})}))}
 \]
 which intuitively means that channels must always remain open until there are no more pending messages on that channel.
 
@@ -172,11 +174,11 @@ each points in time.
 
 \begin{definition}[Kripke frame]
   A \emph{Kripke frame} $M$ is a quadruple $(T, \prec, D, d)$ where $T$ is a set of time-points, $\prec$ is an
-  accessibility relation over $T$, $D$ is a function assigning to each point in time $t$ a non-empty set $D(t)$ s.t.
+  accessibility relation over $T$, $D$ is a function assigning to each point in time $t$ a non-empty set $D(t)$ such that
   if $t \prec t'$ then $D(t) \subseteq D(t')$, $d$ is a function assigning to each point in time $t$ a set $d(t)
   \subseteq D(t)$.
 \end{definition}
-Intuitively, the so-called outer domains $D(t)$ represent the collection of object that can be referenced at the point
+Intuitively, the so-called outer domains $D(t)$ represent the collection of objects that can be referenced at the point
 in time $t$, conversely the so-called inner domains $d(t)$ represent the collection of object actually existing the
 point in time $t$. An assignement function $\sigma$ is a function from the set of variables $X$ to the outer-domain
 $D(t)$ of a given point in time $t$. Finally, we need an interpretation function $I$ such that $I(P, t)$ assign for each
@@ -184,8 +186,28 @@ predicate constant $P \in \mathcal{P}$ and point in time $t$ a subset of $D^n(t)
 $I(x, t) = \sigma(x)$ where $x \in X$ and $\sigma$ is a suitable assignment that is said to be inducing $I$, noted as
 $I^\sigma$.
 
-\begin{definition}[FO-LTL semantic]
-  The truthness of a FO-LTL formula $\phi$ with the chain $\pi$ over the Kripke model $M$ and the induced
+\begin{example}\label{ex:domains}
+  Let us describe an example that will clarify the distinction between outer domains $D(t)$ and inner domains $d(t)$.
+  Assume we are modeling a memory management system, with a predicate $C$ with arity $1$ that identifies object which
+  are immutable in the current scope. Let $t$ be a point in time where the outer domain $D(t)$ and the inner domain
+  $d(t)$ are equal, and they contain a single object $D(t) = d(t) = \set{\text{obj}_1}$.  At the point in time $t + 1$,
+  the outer domain does not grow, thus it must remain equal $D(t) = D(t + 1)$, however we move to another scope and the
+  object is removed from the inner domain, as it is not referentiable inside the new scope, thus $d(t) = \emptyset$. By
+  definition, each predicate must be interpreted for each value in the outer domain, thus assume we have an
+  interpretation $I$ with $I(C, t) = I(C, t + 1) = \set{\text{obj}_1}$. It's trivial to compute that the formula
+  $\existss{x}{C(x)}$ holds for every trace starting with $t$, since $\text{obj}_1 \in d(t)$ and thus every assignment
+  induced by $I$ is extended by assigning $\text{obj}_1$ to $x$. This is not true for traces starting with $t + 1$ since
+  there is no value in the inner domain $d(t + 1)$ to quantify over, result which matches the intuition that it does not
+  make sense to talk about an object that is not referentiable within the current scope. However, one may expect that
+  since $\text{obj}_1$ is not referentiable at $t + 1$, for every trace that starts with $t$ and continues with $t + 1$
+  it must not hold that $\existss{x}{\nextop{C(x)}}$, but this is false since $\text{obj}_1$ is still in the outer
+  domain, it is still referentiable in the logic and thus the formula holds, which is trivially checkable. This example
+  shows that special treatment of the domains is required to model indentification, deallocation and merging of entities
+  across worlds.
+\end{example}
+
+\begin{definition}[FOLTL semantic]
+  The truthness of a \ac{FOLTL} formula $\phi$ with the chain $\pi$ over the Kripke model $M$ and the induced
   interpretation $I^\sigma$, denoted as $\pi, I^\sigma \vDash \phi$ is defined inductively as follows:
   \begin{align*}
     \pi, I^\sigma &\vDash tt && \\
@@ -194,11 +216,14 @@ $I^\sigma$.
     \pi, I^\sigma &\vDash \phi_1 \lor \phi_2 &&\text{iff } \pi, I^\sigma \vDash \phi_1 \text{ or } \pi, I^\sigma
       \vDash \phi_2 \\
     \pi, I^\sigma &\vDash \nextop{\phi} &&\text{iff } \suffix(\pi, 1), I^\sigma \vDash \phi \\
-    \pi, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j), I^\sigma \vDash \phi_2 \land
-      (\foralls{0 \leq i < j}{\suffix(\pi, i), I^\sigma \vDash \phi_1})} \\
-    \pi, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(\pi_0)}{\pi, I^{\sigma[v/x]} \vDash \phi} \\
+    \pi, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j), I^\sigma \vDash \phi_2} \\
+    &&&\quad\text{and } \foralls{0 \leq i < j}{\suffix(\pi, i), I^\sigma \vDash \phi_1} \\
+    \pi, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(\pi_0)}{\pi, I^{\sigma[v/x]} \vDash \phi}
+    \text{ with $x$ free in $\phi$} \\
   \end{align*}
 \end{definition}
+
+With the semantics defined, we can be more clear on the distinction between inner and outer domains. Assume 
 
 \section{Trans-World Identity}
 
@@ -206,17 +231,17 @@ Kripke-frames requires that the so-called outer domains $D(t)$ are always increa
 then $D(t) \subseteq D(t')$. This condition is required to evaluate temporal operators, otherwise it would not be
 possible to denote a variable $x$ in the future. Other works fix a universal domain equal for each point in time, thus
 $D(t) = D(t')$ for each $t, t' \in T$, which also follows from accessibility relations that contain loops.  However, by
-imposing such condition we are identifying object \emph{a priori} and universally, irrespective of time. This problem is
+imposing such conditions we are identifying objects \emph{a priori} and universally, irrespective of time. This problem is
 called \emph{trans-world identity}~\cite{lewis_counterpart_1968,lewis_plurality_2001} and extensive
 literature~\cite{belardinelli_quantified_2021,plantinga_transworld_1978,kripke_naming_1998} about it has been produced
-in the last half-century, be either philosophycal questions or possible pratical solutions with Kripke-style semantics.
+in the last half-century, be either philosophical questions or possible pratical solutions with Kripke-style semantics.
 
 Even with the additional constraints on object domains, there are still other issues with Kripke-style semantics and the
 system we are trying to model. Assume we are trying to model resource allocation in a complex system. Let $i$ be a
 resource. Due to the outer domain condition, we can identify the exact point in time where the resource $i$ is
 allocated, i.e. $i \in D(t)$ for some time point $t$. Note that the resource can be allocated, but still can be unused
 for a potentially infinite amount of time, since it may not belong to any inner domain, not even $d(t)$. However, at the
-same time, we cannot deallocate the resource $i$ since it must always be referentiable at future point in times. This
+same time, we cannot deallocate the resource $i$ since it must always be referentiable at future points in time. This
 can be solved with infinite outer domains to ensure uniqueness or by restricting the class of admissible evolutions, but
 such solutions tend to hamper usability.
 
