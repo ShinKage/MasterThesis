@@ -23,7 +23,7 @@ operators known in the literature~\cite{kroger_temporal_2008}, like \emph{unless
   current or next steps.
 \end{definition}
 
-Classical propositional logic connetives can be derived trivially:
+Classical propositional logic connectives can be derived trivially:
 \[
   \phi_1 \land \phi_2 \equiv \neg(\neg\phi_1 \lor \neg\phi_2) \qquad
   \phi_1 \to \phi_2 \equiv \neg\phi_1 \lor \phi_2
@@ -86,17 +86,17 @@ LTL formulae can encode safety properties, commonly with the form $\forever{\neg
 systems, commonly with the form $\forever{\eventually{\phi}}$ or $\forever{(\phi_1 \to
 \eventually{\phi_2})}$~\cite{baier_principles_2008}. Assume that we have two concurrent processes and that we can
 encode with two atomic propositions, $\text{crit}_1$ and $\text{crit}_2$, when the two processes can access a critical
-section, then the property of mutual exclusivity can be model by the formula $\forever{(\neg\text{crit}_1 \lor
+section, then the property of mutual exclusivity can be modeled by the formula $\forever{(\neg\text{crit}_1 \lor
 \neg\text{crit}_2)}$. If we also have atomic propositions for wait conditions, $\text{wait}_1$, then we can model
-liveness conditions, for example $\forever{(\text{wait}_1 \to \eventually{\text{crit}_1})}$ which means that whenever a
-process reaches a wait condition, eventually will enter the critical section; we can also model fairness conditions, for
+liveness conditions, for example $\forever{(\text{wait}_1 \to \eventually{\text{crit}_1})}$, which means that whenever a
+process reaches a wait condition, it will eventually enter the critical section; we can also model fairness conditions, for
 example $\forever{\eventually{\text{wait}_1}} \to \forever{\eventually{\text{crit}_1}}$ means that if the process
-infinitely often reaches a wait condition than infinitely often will reach the critical section.
+infinitely often reaches a wait condition than infinitely often it will reach the critical section.
 
-\section{Semantic}
+\section{Semantics}
 
 The de-facto standard semantics for Linear Temporal Logic and Temporal Logics in general are Kripke-style
-semantics~\cite{gasquet_kripkes_2011}, as for modal logics. In modal logic, the so-called Kripke-frames are pairs of set
+semantics~\cite{gasquet_kripkes_2011}, as for modal logics. In modal logic, the so-called Kripke-frames are pairs of a set
 of worlds and an accessibility relation between worlds. For temporal logic, each world is a point in time and the
 accessibility relation models the flow of time, thus a temporal model is defined as:
 
@@ -111,8 +111,8 @@ trace of the model, i.e. an infinite ascending chain of the accessibility relati
 $\pi = t_0t_1t_2\ldots$ with $t_i \prec t_{i+1}$ for every $i \geq 0$.
 
 \begin{definition}[LTL semantic]
-  The truthness of a LTL formula $\phi$ with respect to chain $\pi$ over the temporal model $M$, denoted as
-  $M, \pi \vDash \phi$ is defined inductively as follows:
+  The truthness of a LTL formula $\phi$ with respect to a chain $\pi$ over the temporal model $M$, denoted as
+  $M, \pi \vDash \phi$, is defined inductively as follows:
   \begin{align*}
     \pi &\vDash tt && \\
     \pi &\vDash p &&\text{iff } p \in L(\pi_0) \\
@@ -170,7 +170,7 @@ with the intuitive meaning that there must always exists at least one open chann
 which intuitively means that channels must always remain open until there are no more pending messages on that channel.
 
 For quantified LTL we need to extend the temporal frames with the domain of values that makes sense to talk about at
-each points in time.
+each point in time.
 
 \begin{definition}[Kripke frame]
   A \emph{Kripke frame} $M$ is a quadruple $(T, \prec, D, d)$ where $T$ is a set of time-points, $\prec$ is an
@@ -179,8 +179,8 @@ each points in time.
   \subseteq D(t)$.
 \end{definition}
 Intuitively, the so-called outer domains $D(t)$ represent the collection of objects that can be referenced at the point
-in time $t$, conversely the so-called inner domains $d(t)$ represent the collection of object actually existing the
-point in time $t$. An assignement function $\sigma$ is a function from the set of variables $X$ to the outer-domain
+in time $t$, conversely the so-called inner domains $d(t)$ represent the collection of object actually existing at the
+point in time $t$. An assignement function $\sigma : X \to D(t)$ is a function from the set of variables $X$ to the outer-domain
 $D(t)$ of a given point in time $t$. Finally, we need an interpretation function $I$ such that $I(P, t)$ assign for each
 predicate constant $P \in \mathcal{P}$ and point in time $t$ a subset of $D^n(t)$ where $n$ is the arity of $P$, and
 $I(x, t) = \sigma(x)$ where $x \in X$ and $\sigma$ is a suitable assignment that is said to be inducing $I$, noted as
@@ -188,13 +188,13 @@ $I^\sigma$.
 
 \begin{example}\label{ex:domains}
   Let us describe an example that will clarify the distinction between outer domains $D(t)$ and inner domains $d(t)$.
-  Assume we are modeling a memory management system, with a predicate $C$ with arity $1$ that identifies object which
+  Assume we are modeling a memory management system, with a predicate $C$ with arity $1$ that identifies objects that
   are immutable in the current scope. Let $t$ be a point in time where the outer domain $D(t)$ and the inner domain
   $d(t)$ are equal, and they contain a single object $D(t) = d(t) = \set{\text{obj}_1}$.  At the point in time $t + 1$,
   the outer domain does not grow, thus it must remain equal $D(t) = D(t + 1)$, however we move to another scope and the
   object is removed from the inner domain, as it is not referentiable inside the new scope, thus $d(t) = \emptyset$. By
   definition, each predicate must be interpreted for each value in the outer domain, thus assume we have an
-  interpretation $I$ with $I(C, t) = I(C, t + 1) = \set{\text{obj}_1}$. It's trivial to compute that the formula
+  interpretation $I$ with $I(C, t) = I(C, t + 1) = \set{\text{obj}_1}$. It is trivial to compute that the formula
   $\existss{x}{C(x)}$ holds for every trace starting with $t$, since $\text{obj}_1 \in d(t)$ and thus every assignment
   induced by $I$ is extended by assigning $\text{obj}_1$ to $x$. This is not true for traces starting with $t + 1$ since
   there is no value in the inner domain $d(t + 1)$ to quantify over, result which matches the intuition that it does not
@@ -202,13 +202,13 @@ $I^\sigma$.
   since $\text{obj}_1$ is not referentiable at $t + 1$, for every trace that starts with $t$ and continues with $t + 1$
   it must not hold that $\existss{x}{\nextop{C(x)}}$, but this is false since $\text{obj}_1$ is still in the outer
   domain, it is still referentiable in the logic and thus the formula holds, which is trivially checkable. This example
-  shows that special treatment of the domains is required to model indentification, deallocation and merging of entities
+  shows that special treatment of the domains is required to model identification and deallocation of entities
   across worlds.
 \end{example}
 
 \begin{definition}[FOLTL semantic]
-  The truthness of a \ac{FOLTL} formula $\phi$ with the chain $\pi$ over the Kripke model $M$ and the induced
-  interpretation $I^\sigma$, denoted as $\pi, I^\sigma \vDash \phi$ is defined inductively as follows:
+  The truthness of a \ac{FOLTL} formula $\phi$ with respect to a chain $\pi$ over the Kripke model $M$ and the induced
+  interpretation $I^\sigma$, denoted as $\pi, I^\sigma \vDash \phi$, is defined inductively as follows:
   \begin{align*}
     \pi, I^\sigma &\vDash tt && \\
     \pi, I^\sigma &\vDash P(x_1, \ldots, x_n) &&\text{iff } (\sigma(x_1), \ldots, \sigma(x_2)) \in I^\sigma(P, \pi_0) \\
@@ -219,11 +219,11 @@ $I^\sigma$.
     \pi, I^\sigma &\vDash \until{\phi_1}{\phi_2} &&\text{iff } \existss{j \geq 0}{\suffix(\pi, j), I^\sigma \vDash \phi_2} \\
     &&&\quad\text{and } \foralls{0 \leq i < j}{\suffix(\pi, i), I^\sigma \vDash \phi_1} \\
     \pi, I^\sigma &\vDash \existss{x}{\phi} &&\text{iff } \existss{v \in d(\pi_0)}{\pi, I^{\sigma[v/x]} \vDash \phi}
-    \text{ with $x$ free in $\phi$} \\
+    \text{ with $x$ not defined in $\sigma$} \\
   \end{align*}
 \end{definition}
 
-With the semantics defined, we can be more clear on the distinction between inner and outer domains. Assume 
+% TODO: recheck the example?
 
 \section{Trans-World Identity}
 
@@ -234,7 +234,7 @@ $D(t) = D(t')$ for each $t, t' \in T$, which also follows from accessibility rel
 imposing such conditions we are identifying objects \emph{a priori} and universally, irrespective of time. This problem is
 called \emph{trans-world identity}~\cite{lewis_counterpart_1968,lewis_plurality_2001} and extensive
 literature~\cite{belardinelli_quantified_2021,plantinga_transworld_1978,kripke_naming_1998} about it has been produced
-in the last half-century, be either philosophical questions or possible pratical solutions with Kripke-style semantics.
+in the last half-century, either motivated by philosophical questions or by possible pratical solutions with Kripke-style semantics.
 
 Even with the additional constraints on object domains, there are still other issues with Kripke-style semantics and the
 system we are trying to model. Assume we are trying to model resource allocation in a complex system. Let $i$ be a

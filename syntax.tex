@@ -20,15 +20,15 @@ Classical propositional logic and other temporal operators can be derived as for
 derivable universal quantifier, $\foralls{x_\tau}{\phi} \equiv \neg\existss{x_\tau}{\neg\phi}$. We will also define a
 shorthand for inequality, $x_\tau \neq \epsilon_\tau \equiv \neg(x_\tau = \epsilon_\tau)$.
 
-The syntax is almost identical to the one introduced in~\Cref{def:kripkefoltlsyn}, but predicates are replaced by
+The syntax is almost identical to the one introduced in~\Cref{def:kripkefoltlsyn}, but for the sake of conciseness of predicates are replaced by
 equality of terms, which we will further specify in the next section, and the existential quantifier is instead a family
 of operators indexed by the sorts of the signature.
 
-Now we will show, as examples, some general properties that can be reasonable in a large space of signature and that
+Now we will show, as examples, some general properties that are reasonable in more than one specific signature and that
 display the features of the logic. Before introducing complex formulae we need to identify entities which are available
 in a given world: $\text{presence}(x_\tau) \equiv \existss{y_\tau}{x = y}$. The existential quantifier requires a
 concrete value, which is avilable in the current world, that is equal to the value we are checking the presence of, even
-if is the counterpart of some other entity in a previously accessible world.
+if it is the counterpart of some other entity in a previously accessible world.
 
 \begin{example}[Deallocation]
   Checking that an entity of sort $\tau$ is deallocated at the next point in time is simple enough:
@@ -45,7 +45,7 @@ if is the counterpart of some other entity in a previously accessible world.
   Allocation mirrors deallocation, for example the converse of $\text{will-delete}$ is: \[\text{one-new}(x_\tau) \equiv
   \neg\text{presence}(x_\tau) \land \nextop{\text{presence}(x_\tau)}\] A common practice when dealing with manual memory management
   is to always deallocate memory after allocations, we can construct a formula that translates this informal
-  requirement: \[\forever{\foralls{x_\tau}{(\eventually{\text{one-new}(x_\tau)} \to
+  requirement: \[\forever{\foralls{x_\tau}{(\text{one-new}(x_\tau) \to
   \eventually{\text{will-delete}(x_\tau)})}}\] The forever operator at the head of the formula is required, otherwise we
   would only quantify over the possible object in the current world, instead of all the possible objects in future
   worlds.
@@ -67,7 +67,7 @@ if is the counterpart of some other entity in a previously accessible world.
   true for worlds where the number of entities of sort $\tau$ is bounded by 2. This predicate can be extended to larger
   boundaries or enforced during the evolution of the system, e.g. assume that the graph signature is used to model a net
   of unidirectional inter-process communication channel, we may want to verify that the number of channel, or edges,
-  spawned during the whole execution is bounded by some number $n$ than we must verify the formula
+  spawned during the whole execution is bounded by some number $n$ then we must verify the formula
   $\forever{\text{at-most-n}}$; or we may want to make sure that after reaching maximum capacity, the programs
   continously deallocate channels until a minimum bound $m$ is reached, thus \[\forever{(\text{at-most-n} \land (\text{exactly-n} \to
   \until{(\existss{x}{\text{will-delete}(x)})}{\text{at-most-m}}))}\] where $\text{exactly-n}$ is a predicate that

@@ -31,12 +31,12 @@ themselves. Worlds can be considered points in time when we take the traces of t
 of the partial homomorphism from each world to the next models the transition in the system and thus the evolution of
 time.
 
-For the rest of the work, we will implicitly assume that every counterpart model $M$ does not have deadlock worlds, i.e.
+For the rest of the work, we will implicitly assume that every counterpart model $M$ has no deadlock worlds, i.e.
 worlds without outgoing transitions. This condition is not a limitation since a counterpart model that does not satisfy
 the condition can be transformed into one that does satisfy it by adding a reflexive transition to the accessibility
 relation, i.e. for each $w$ that is a deadlock world, $(w, \text{id}_w, w) \in\;\rightsquigarrow$, or an ad-hoc world
 with only a reflexive transition. Such modification is typical~\cite{baier_principles_2008} of other works in the field,
-it does not impact the results and it meaningful simplifies the semantics presented here.
+it does not impact the results and it largely simplifies the semantics presented here.
 
 \begin{definition}
   Let $X$ be a denumerable sets of variables, and $M = (W, \rightsquigarrow, d)$ be a counterpart model over a signature

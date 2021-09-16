@@ -36,7 +36,9 @@ the standard notion of equality. The negation of a formula is satisfied if the f
 valid. The disjunction of two formulae is valid if either of them is valid. Existentially quantified formulae are valid
 if the formula is valid in the context extended with the quantified variable. The sub-formula must be valid in the same
 world and with the assignment extended to the context $\Gamma, x$ with a new value within the domain of the algebra,
-thus behaving identically on all the variables in the original context $\Gamma$. Next we look at temporal operators.
+thus behaving identically on all the variables in the original context $\Gamma$.
+
+Next we look at temporal operators.
 Formulae containing the next operator are valid if the sub-formula is valid in the next accessible world in the sequence.
 The sub-formula is evaluated with the assignement composed with the counterpart relation between the accessible worlds.
 Formulae with the until operator, instead, are satisfied either if the post-condition is valid in the current world or 
@@ -96,7 +98,7 @@ Lets explore the semantics of the other common operators defined in the previous
     &\Leftrightarrow \foralls{j \geq 0}{\sem{\suffix(\pi,j)}{cr_{j-1} \circ \cdots \circ cr_0 \circ \sigma}{\Gamma}{\phi}} \label{eq:foreversem}
 \end{align}
 
-\section{Example of execution}
+\section{Example of execution}\label{sec:execexample}
 
 \begin{figure}
   \begin{center}
@@ -134,7 +136,7 @@ Lets explore the semantics of the other common operators defined in the previous
 
 Here we will provide an example of semantic evaluation of a formula, using some of the predicates introduced earlier in the chapter.  Assume we are evaluating according to the counterpart model visually represented by~\Cref{fig:exmemsignature}, with the signature being the idealised memory model in~\Cref{sec:algebra} and the counterpart relations acting as the identity on the objects sort, and on memory location sort as visually represented. 
 
-Lets evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step of computation.
+Let us evaluate the formula $\phi_1 \equiv \existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}}$, intuitively it identifies worlds where there is at least one object that is moved in memory after one step of computation.
 Because this formula has no free variables it will be evaluated in the empty context, thus the only admissible substitution is the empty substitution, which we will denote with $\bot$.
 
 First, by virtue of the definition of the existential quantifier, we need to evaluate the conjunction in the empty context extended by the two quantified variables, $\sem{\pi}{\sigma}{x,l}{\rho(x) = l \land \nextop{(\rho(x) \neq l)}}$.

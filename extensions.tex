@@ -1,7 +1,7 @@
 \section{Second-order quantification}
 
 Following the corpus of results on counterpart relations as models for monodic second-order modal logics, we can
-straightforwardly define a syntax for Monodic \ac{SOLTL}, with membership as the sole operator beside the temporal and
+straightforwardly define a syntax for Monadic \ac{SOLTL}, with membership as the sole operator beside the temporal and
 propositional ones.
 
 \begin{definition}[Second-Order Linear Temporal Logic]
@@ -34,7 +34,7 @@ we require a second-order assignment $\xi$, i.e $\xi$ is a partial function such
 2^{d(w)}$, which intuitively assigns a set of values in the domain $d(w)$ to each second-order variable.
 
 \begin{definition}[Semantic of \ac{SOLTL}]
-Let $M$ be a counterpart model, $\Gamma,\Delta$ respectively a first-order and second-order context, $\pi = w_0
+Let $M$ be a counterpart model, $\Gamma$ and $\Delta$ respectively a first-order and second-order context, $\pi = w_0
 \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots$ a sequence of accessible arrows,
 $\sigma$ and $\xi$ respectively a first-order assignment and a second-order assignment for the world $w_0$:
 The validity of a formula-in-context $\phi$, denoted $\semtwo{\sigma}{\xi}{w}{\Gamma}{\Delta}{\phi}$, is defined
@@ -66,8 +66,12 @@ inductively as follows:
 
 \section{Branching time}
 A further axis of extension is to expand the logic to a branching time logic, thus by introducing operators that
-quantify over the set of possible traces instead of a single one. Here we introduce the syntax and semantic for a
-quantified version of \ac{CTL}~\cite{hodkinson_decidable_2002}.
+quantify over the set of possible traces instead of a single one. The logic that requires every temporal operator to be
+prefixed by a path quantifier is called \ac{CTL}. The path quantifiers are: all, $\forallpath{\phi}$,
+which holds if $\phi$ holds on all traces starting from the current world, and exists, $\existpath{\phi}$ which holds if
+there exists at least one trace starting from the current world where $\phi$ holds.
+
+Here we introduce the syntax and semantic for a quantified version of \ac{CTL}~\cite{hodkinson_decidable_2002}.
 
 \begin{align*}
   \phi &\Coloneqq tt \;|\; \epsilon_\tau = \epsilon_\tau
@@ -78,6 +82,13 @@ quantified version of \ac{CTL}~\cite{hodkinson_decidable_2002}.
                     \;|\; \forallpath{\psi} \\
   \psi &\Coloneqq \nextop{\phi} \;|\; \until{\phi}{\phi}
 \end{align*}
+
+Semantically, a single trace, i.e. a chain $\pi$, is a sequence of worlds related by the accessibility relation, however
+the given a world $w$ there could be more than one world $w'$ such that $\worldcr{w}{cr}{w'}$. By chosing a specific
+accesible world whenever we have one or more choices we are effectively building a tree, thus the name of \ac{CTL},
+where each infinite descending path from the starting world is a trace as we defined for the semantics of \ac{LTL}. The
+path quantifiers are thus the equivalent of quantifiers forall and exists of \ac{FOL} but for the subset of paths
+starting from the current world.
 
 \begin{align*}
   \pi, \sigma &\vDash_\Gamma tt \\
@@ -101,10 +112,17 @@ quantified version of \ac{CTL}~\cite{hodkinson_decidable_2002}.
 Where $\extend$ is defined as in~\Cref{def:fosemantic}, and paths is the set of traces starting from the argument world,
 $\paths(w) = \set{\pi | \pi = w \overset{cr_0}{\rightsquigarrow} w_1 \overset{cr_1}{\rightsquigarrow} \ldots}$.
 
-The translation from \ac{LTL} to \ac{CTL} is straightforawrd. The operators that operate on single world are
-semantically identical to their \ac{LTL} variants. The path operators instead quantify over the set of paths that start
-from the current world.
+Temporal operators that operate on single world are semantically identical to their \ac{LTL} variants. The path
+operators instead quantify over the set of paths that start from the current world. Recall the formula evaluated in
+\Cref{sec:execexample}, we identified the traces for which the formula holds, for example starting from the world $w_2$
+in~\Cref{fig:exmemsignature}, the traces that have the world $w_3$ as next in the sequence are valid for the formula,
+while the traces that have the world $w_4$ as next in the sequence do not. With \ac{LTL} is impossible to build a
+formula that encodes this disparity or that requires that every possible future of the world $w_2$ has a change in
+location. Instead we can simply encode the latter property in \ac{CTL} by prepending the temporal operator with a
+universal path quantifier: $\existss{x_{\tau_o}}{\existss{l_{\tau_l}}{\rho(x) = l \land \forallpath{\nextop{(\rho(x)
+\neq l)}}}}$.
 
 Logically the next step would be investigating an axiomatic system for \ac{CTL} or extending the semantic to \ac{CTL}* a
-superset of both \ac{LTL} and \ac{CTL}. Another approach is to add a probability measure to the transitions in the
+superset of both \ac{LTL} and \ac{CTL}, where path quantifiers and temporal operators may appear freely in formulae.
+Another approach is to add a probability measure to the transitions in the
 counterpart model, thus adding a probability operator, as in \ac{PCTL}~\cite{brazdil_satisfiability_2008}.

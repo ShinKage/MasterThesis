@@ -6,14 +6,14 @@
   \in \Sigma_\tau, i = 1, \ldots, n}$ is a set of function symbols.
 \end{definition}
 
-We show a couple of signatures that will be used throughout the work. First, let us model simple directed graphs, which
-have two sorts: vertices, $\tau_v$, and edges $\tau_e$. Naturally to identify edges we require two operations, $s$, $t$
+We show a couple of signatures that will be used throughout the work. First, let us model directed graphs, which
+have two sorts: vertices, $\tau_v$, and edges, $\tau_e$. Naturally to identify edges we require two operations, $s$ and $t$,
 both of type $\tau_e \to \tau_v$, which respectively identify the source and target of a given edge. Thus the complete
 signature for simple directed graph is $\Sigma = (\set{\tau_v, \tau_e}, \set{s : \tau_e \to \tau_v, t : \tau_e \to
 \tau_v})$.
 
 Next we present the signature for a simplified memory management model. Once again we have two sorts: objects, $\tau_o$, and
-memory locations $\tau_l$. The only operation is the function that associate to each object its memory location,
+memory locations, $\tau_l$. The only operation is the function that associates to each object its memory location,
 $\rho$. Thus the complete signature is $\Sigma = (\set{\tau_o, \tau_l}, \set{\rho : \tau_o \to \tau_l})$.
 
 \begin{definition}[Many-sorted Algebra]
@@ -93,15 +93,15 @@ The graphs in \autoref{fig:egsdgraphs} are visual representation of the followin
   t^{\algebra{G}_2} &= \set{e_5 \mapsto n_6,e_6 \mapsto n_5,e_7 \mapsto n_7, e_8 \mapsto n_7}
 \end{align*}
 
-In the same figure are also visually represented partial homomorphism between those graphs that can be translated to:
+In the same figure also partial homomorphisms between those graphs are visually represented, which can be formally translated to:
 \begin{align*}
   \algebra{G}_0 \to \algebra{G}_1 &= \set{\set{n_1 \mapsto n_4,n_2 \mapsto n_3},\set{e_1 \mapsto e_4}} \\
   \algebra{G}_1 \to \algebra{G}_2 &= \set{\set{n_4 \mapsto n_5, n_3 \mapsto n_6},\set{e_4 \mapsto e_5, e_3 \mapsto e_6}}
 \end{align*}
  where the
 requirements for homomorphism are trivially checkable. Notice that the first example of homomorphism shows an interesting
-behaviour for our purpose. Due to partiality it removes the node $n_0$ and the edges $e_0$, $e_2$ while preserving the
-structure of the nodes $n_1$, $n_2$ and the edge $e_1$ between them.
+behaviour for our purpose. Due to partiality it removes the node $n_0$ and the edges $e_0$, $e_2$ while preserving
+the nodes $n_1$, $n_2$ and the edge $e_1$ between them.
 \end{example}
 
 To model existential properties, we can extend a signature $\Sigma$ with a denumerable set $X$ of variables typed over
